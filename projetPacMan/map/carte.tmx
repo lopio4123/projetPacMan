@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="left-up" width="15" height="20" tilewidth="32" tileheight="32" infinite="0" nextobjectid="1">
+ <tileset firstgid="1" name="terrain_atlas" tilewidth="32" tileheight="32" tilecount="121" columns="11">
+  <image source="terrain_atlas.png" width="375" height="375"/>
+ </tileset>
+ <tileset firstgid="122" name="base_out_atlas" tilewidth="32" tileheight="32" tilecount="121" columns="11">
+  <image source="base_out_atlas.png" width="375" height="375"/>
+ </tileset>
+ <tileset firstgid="243" name="terrain_atlas" tilewidth="32" tileheight="32" tilecount="121" columns="11">
+  <image source="terrain_atlas.png" width="375" height="375"/>
+ </tileset>
+ <layer name="Sol" width="15" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACnNmYGBwHsWjeBSP4iGAAV5HNNywBAAA
+  </data>
+ </layer>
+ <layer name="mur" width="15" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACmNmYGBgpgCTA4a7XnR1pOplxsMnxW5q6CU2rnHpRZcbanpxhQG+/EDIfnxmEwpvQu7CB3DpJcYsaud9cjEAGbd1ebAEAAA=
+  </data>
+ </layer>
+</map>
