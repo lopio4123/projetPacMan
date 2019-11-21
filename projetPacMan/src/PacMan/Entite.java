@@ -1,6 +1,7 @@
 package PacMan;
 
 import org.newdawn.slick.Image;
+
 import org.newdawn.slick.SlickException;
 
 public class Entite {
@@ -11,16 +12,27 @@ public class Entite {
 	private float positionX;
 	private float positionY;
 	private int grandeurTiles;
+	private Direction direction;
 
-	public Entite(String image, int grandeur, int grandeurTiles, int positionX, int positionY) throws SlickException {
+	public Entite(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction) throws SlickException {
 		this.skin = new Image(image);
 		this.positionX = positionX;
 		this.positionY = positionY;
 		hauteur = grandeur;
 		largeur = grandeur;
 		this.grandeurTiles = grandeurTiles;
+		this.direction = direction;
+		System.out.println(direction);
 	}
 	
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
+
 	public void apparaitre() {
 		skin.draw(positionX * grandeurTiles, positionY * grandeurTiles, hauteur, largeur);
 	}
@@ -89,5 +101,7 @@ public class Entite {
 	public void setGrandeurTiles(int grandeurTiles) {
 		this.grandeurTiles = grandeurTiles;
 	}
+
+
 
 }
