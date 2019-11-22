@@ -9,12 +9,12 @@
  <tileset firstgid="243" name="terrain_atlas" tilewidth="32" tileheight="32" tilecount="121" columns="11">
   <image source="terrain_atlas.png" width="375" height="375"/>
  </tileset>
- <layer name="Sol" width="15" height="20">
+ <layer name="Sol" width="15" height="20" locked="1">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAACnNmYGBwHsWjeBSP4iGAAV5HNNywBAAA
   </data>
  </layer>
- <layer name="mur" width="15" height="20">
+ <layer name="mur" width="15" height="20" locked="1">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAACmNmYGBgpgCTA4a7XnR1pOplxsMnxW5q6CU2rnHpRZcbanpxhQG+/EDIfnxmEwpvQu7CB3DpJcYsaud9cjEAGbd1ebAEAAA=
   </data>

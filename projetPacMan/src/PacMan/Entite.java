@@ -57,6 +57,15 @@ public class Entite {
 		int positionYInt = Math.round(positionY);
 		return positionYInt;
 	}
+	//sert à s'arreter à une bonne distance du mur...
+	/*
+	public int getPositionXArret(){
+		int positionXInt = Math.round(positionX);
+		int i = new Float(positionX).intValue();
+		float decimale = positionX-(new Float(i).floatValue());
+		return decimale;
+	}
+	*/
 	
 	public float getPositionX() {
 		return positionX;

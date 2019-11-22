@@ -11,12 +11,12 @@ public class Main {
 
 	public static void main(String[] args) {
 		//resolution
-				int largeurAffichage = 480;
-				int hauteurAffichage = 640;
+				int largeurAffichage = 576;
+				int hauteurAffichage = 768;
 				boolean siPleineEcran = false;
 				
 				try {
-					AppGameContainer app = new AppGameContainer(new Jeu("allo"));
+					AppGameContainer app = new AppGameContainer(new Jeu("Extrem pac-man"));
 					app.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
 					app.start();
 				}catch(SlickException ex) {
