@@ -73,7 +73,7 @@ public class Jeu extends BasicGame {
 
 		// s'arrete si il y a un mur.
 		// verifi le coté droit
-		if (pacMan.getDirection() == Direction.RIGHT
+		if (pacMan.getDirection() == Direction.RIGHT//ss
 				&& map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) {
 			System.out.println("muuuuuuuuuuuuuuuuuuur droite");
 			//pour que pac man sarrete a un chiffre rond
