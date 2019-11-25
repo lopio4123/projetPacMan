@@ -14,6 +14,7 @@ public class Main {
 				int largeurAffichage = 576;
 				int hauteurAffichage = 800;
 				boolean siPleineEcran = false;
+				int test = 0;
 				
 				try {
 					AppGameContainer app = new AppGameContainer(new Jeu("Extrem pac-man"));

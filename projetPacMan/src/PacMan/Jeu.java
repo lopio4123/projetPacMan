@@ -12,11 +12,13 @@ public class Jeu extends BasicGame {
 
 	// déclaration variable
 	private TiledMap map;
+	private TiledMap accueil;
 	private int tilesSize;
 	private int mur;
 	private Entite pacMan;
 
 	// tests
+	//ALLO
 
 	public Jeu(String title) {
 		super(title);
@@ -28,8 +30,14 @@ public class Jeu extends BasicGame {
 	}
 
 	public void init(GameContainer gc) throws SlickException {
+<<<<<<< HEAD
 		map = new TiledMap("./map/carte.tmx");
 
+=======
+		map = new TiledMap("./map/map.tmx");
+		//accueil = new TiledMap("./map/accueil.tmx")
+		
+>>>>>>> branch 'master' of https://github.com/lopio4123/projetPacMan.git
 		tilesSize = 32;
 		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 1, 2, Direction.DOWN);
 	}
