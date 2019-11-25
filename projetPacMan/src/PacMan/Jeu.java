@@ -19,6 +19,7 @@ public class Jeu extends BasicGame {
 
 	// tests
 	//ALLO
+	//allo 2
 
 	public Jeu(String title) {
 		super(title);
