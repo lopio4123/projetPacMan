@@ -6,20 +6,25 @@ import java.util.LinkedList;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
 
-//enum des positions possible
-
 public class Jeu extends BasicGame {
 
 	// déclaration variable
+	// variables par rapport à la map
 	private TiledMap map;
 	private TiledMap accueil;
 	private int tilesSize;
 	private int mur;
+	// caracteristiques des entitées
 	private Entite pacMan;
+<<<<<<< HEAD
 
 	// tests
 	//ALLO
 	//allo 2
+=======
+	private int numNiveau;
+	private int vitesse;
+>>>>>>> branch 'master' of https://github.com/lopio4123/projetPacMan
 
 	public Jeu(String title) {
 		super(title);
@@ -31,9 +36,33 @@ public class Jeu extends BasicGame {
 	}
 
 	public void init(GameContainer gc) throws SlickException {
+		// initialisation du niveau
+		numNiveau = 5;
+		// initialisation selon le niveau
+		switch (numNiveau) {
+		case 1:
+			vitesse = 30;
+			break;
+		case 2:
+			vitesse = 25;
+			break;
+		case 3:
+			vitesse = 20;
+			break;
+		case 4:
+			vitesse = 15;
+			break;
+		case 5:
+			vitesse = 12;
+			break;
+
+		}
+		// génération de la map
 		map = new TiledMap("./map/carte.tmx");
 		tilesSize = 32;
+		// génération des entitées
 		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 1, 2, Direction.DOWN);
+
 	}
 
 	public void update(GameContainer gc, int i) throws SlickException {
@@ -42,8 +71,8 @@ public class Jeu extends BasicGame {
 		// logs
 		System.out.println("x : " + pacMan.getPositionX());
 		System.out.println("y : " + pacMan.getPositionY());
-		//System.out.println( "X : " + pacMan.getPositionX());
-		//System.out.println(pacMan.getDirection());
+		// System.out.println( "X : " + pacMan.getPositionX());
+		// System.out.println(pacMan.getDirection());
 
 		// controles
 		Input input = gc.getInput();
@@ -77,32 +106,28 @@ public class Jeu extends BasicGame {
 		// verifi le coté droit
 		if (pacMan.getDirection() == Direction.RIGHT
 				&& map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) {
-			System.out.println("muuuuuuuuuuuuuuuuuuur droite");
-			//pour que pac man sarrete a un chiffre rond
+			// pour que pac man sarrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté gauche
 		else if (pacMan.getDirection() == Direction.LEFT
 				&& map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), mur) != 0) {
-			System.out.println("muuuuuuuuuuuuuuuuuuur gauche");
-			//pour que pac man sarrete a un chiffre rond
+			// pour que pac man sarrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté haut
 		else if (pacMan.getDirection() == Direction.UP
 				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() - 1, mur) != 0) {
-			System.out.println("muuuuuuuuuuuuuuuuuuur haut");
-			//pour que pac man sarrete a un chiffre rond
+			// pour que pac man sarrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté bas
 		else if (pacMan.getDirection() == Direction.DOWN
 				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() + 1, mur) != 0) {
-			System.out.println("muuuuuuuuuuuuuuuuuuur bas");
-			//pour que pac man sarrete a un chiffre rond
+			// pour que pac man sarrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
@@ -110,29 +135,24 @@ public class Jeu extends BasicGame {
 		// deplacement********************************************************************************
 		// droite
 		if (pacMan.getDirection() == Direction.RIGHT) {
-			pacMan.deplacementX((0.1*i) / 20);
+			pacMan.deplacementX((0.1 * i) / vitesse);
 		}
 		// gauche
 		else if (pacMan.getDirection() == Direction.LEFT) {
-			pacMan.deplacementX((-0.1*i) / 20);
+			pacMan.deplacementX((-0.1 * i) / vitesse);
 		}
 		// haut
 		else if (pacMan.getDirection() == Direction.UP) {
-			pacMan.deplacementY((-0.1*i) / 20);
+			pacMan.deplacementY((-0.1 * i) / vitesse);
 		}
 		// bas
 		else if (pacMan.getDirection() == Direction.DOWN) {
-			pacMan.deplacementY((0.1*i) / 20);
+			pacMan.deplacementY((0.1 * i) / vitesse);
 		}
 		// immobile
 		else if (pacMan.getDirection() == Direction.NEUTRE) {
 
 		}
-
-		// if (map.getTileId(pacMan.getPositionXInt() + 5, pacMan.getPositionYInt(), mur
-		// ) != 0) {
-
-		// }
 
 	}
 
