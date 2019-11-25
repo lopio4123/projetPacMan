@@ -12,7 +12,7 @@ public class Main {
 	public static void main(String[] args) {
 		//resolution
 				int largeurAffichage = 576;
-				int hauteurAffichage = 768;
+				int hauteurAffichage = 800;
 				boolean siPleineEcran = false;
 				int test = 0;
 				

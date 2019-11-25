@@ -13,6 +13,8 @@ public class Entite {
 	private float positionY;
 	private int grandeurTiles;
 	private Direction direction;
+	private double positionXX;
+	private double positionYY;
 
 	public Entite(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction) throws SlickException {
 		this.skin = new Image(image);
@@ -48,24 +50,59 @@ public class Entite {
 	public Image getSkin() {
 		return skin;
 	}
-	public int getPositionXInt() {
-		int positionXInt = Math.round(positionX);
+	//transforme les positions en entier (surtout utilisé pour les collisions
+	public int getPositionXIntArret() {
+		if(getDirection() == Direction.RIGHT) {
+			positionXX = Math.floor(positionX);
+		}
+		
+		else  {
+			positionXX = Math.ceil(positionX);
+		}
+		
+		int positionXInt = (int) Math.round(positionXX);
+		
 		return positionXInt;
 	}
 	
-	public int getPositionYInt() {
-		int positionYInt = Math.round(positionY);
+	public int getPositionYIntArret() {
+		if(getDirection() == Direction.DOWN) {
+			positionYY = Math.floor(positionY);
+		}
+		else {
+			positionYY = Math.ceil(positionY);
+		}
+		
+		
+		int positionYInt = (int) Math.round(positionYY);
 		return positionYInt;
 	}
 	//sert à s'arreter à une bonne distance du mur...
-	/*
+	
 	public int getPositionXArret(){
 		int positionXInt = Math.round(positionX);
 		int i = new Float(positionX).intValue();
+		
 		float decimale = positionX-(new Float(i).floatValue());
-		return decimale;
+		
+		System.out.println(decimale);
+		if (decimale > 0.1) {
+			return Math.round(positionX);
+		}
+		
+		else {
+			return (Math.round(positionX) - 1);
+		}
+		
 	}
-	*/
+	
+	public int getPositionXInt() {
+		return Math.round(positionX);
+	}
+	
+	public int getPositionYInt() {
+		return Math.round(positionY);
+	}
 	
 	public float getPositionX() {
 		return positionX;
