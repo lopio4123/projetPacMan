@@ -24,7 +24,6 @@ public class Entite {
 		largeur = grandeur;
 		this.grandeurTiles = grandeurTiles;
 		this.direction = direction;
-		System.out.println(direction);
 	}
 	
 	public Direction getDirection() {
