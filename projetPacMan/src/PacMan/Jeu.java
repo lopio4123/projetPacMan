@@ -38,7 +38,7 @@ public class Jeu extends BasicGame {
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
 
 		// initialisation du niveau
-		numNiveau = 5;
+		numNiveau = 3;
 		switch (numNiveau) {
 		case 1:
 			vitesse = 25;

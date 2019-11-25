@@ -8,7 +8,7 @@ import org.newdawn.slick.SlickException;
 
 
 public class Main {
-
+//ALLO
 	public static void main(String[] args) {
 		//resolution
 				int largeurAffichage = 576;
