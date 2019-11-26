@@ -5,28 +5,26 @@ import java.util.LinkedList;
 
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
+//import org.newdawn.slick.state.StateBasedGame;
 
 public class Jeu extends BasicGame {
 
-	// déclaration variable
+
 	// variables par rapport à la map
 	private TiledMap map;
 	private TiledMap accueil;
+	private Entite pacMan;
+
 	private int tilesSize;
 	private int mur;
-	// caracteristiques des entitées
-	private Entite pacMan;
-<<<<<<< HEAD
-
-	// tests
-	//ALLO
-	//allo 2
-=======
 	private int numNiveau;
 	private int vitesse;
->>>>>>> branch 'master' of https://github.com/lopio4123/projetPacMan
+	
+	// variable menu
+	//private StateBasedGame game;
 
-	public Jeu(String title) {
+	public Jeu(String title) 
+	{
 		super(title);
 	}
 
@@ -37,7 +35,8 @@ public class Jeu extends BasicGame {
 
 	public void init(GameContainer gc) throws SlickException {
 		// initialisation du niveau
-		numNiveau = 5;
+		numNiveau = 1;
+		
 		// initialisation selon le niveau
 		switch (numNiveau) {
 		case 1:
@@ -58,8 +57,13 @@ public class Jeu extends BasicGame {
 
 		}
 		// génération de la map
-		map = new TiledMap("./map/carte.tmx");
+		map = new TiledMap("./map/map.tmx");
 		tilesSize = 32;
+		
+		//Menu
+		//this.game = game; //menu
+		//map = new TiledMap("./map/accueil.tmx");
+		
 		// génération des entitées
 		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 1, 2, Direction.DOWN);
 
@@ -74,10 +78,10 @@ public class Jeu extends BasicGame {
 		// System.out.println( "X : " + pacMan.getPositionX());
 		// System.out.println(pacMan.getDirection());
 
-		// controles
+		// Controle
 		Input input = gc.getInput();
 
-		// droite
+		// Droite
 		if (input.isKeyPressed(Input.KEY_D)
 				&& map.getTileId(pacMan.getPositionXInt() + 1, pacMan.getPositionYInt(), mur) == 0) {
 			pacMan.setDirection(Direction.RIGHT);
@@ -102,37 +106,38 @@ public class Jeu extends BasicGame {
 			pacMan.setDirection(Direction.DOWN);
 		}
 
-		// s'arrete si il y a un mur.
+		// s'arrete si il y a un mur
 		// verifi le coté droit
 		if (pacMan.getDirection() == Direction.RIGHT
 				&& map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) {
-			// pour que pac man sarrete a un chiffre rond
+			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté gauche
 		else if (pacMan.getDirection() == Direction.LEFT
 				&& map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), mur) != 0) {
-			// pour que pac man sarrete a un chiffre rond
+			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté haut
 		else if (pacMan.getDirection() == Direction.UP
 				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() - 1, mur) != 0) {
-			// pour que pac man sarrete a un chiffre rond
+			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté bas
 		else if (pacMan.getDirection() == Direction.DOWN
 				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() + 1, mur) != 0) {
-			// pour que pac man sarrete a un chiffre rond
+			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 
-		// deplacement********************************************************************************
+		// ***************** Deplacement *****************
+		
 		// droite
 		if (pacMan.getDirection() == Direction.RIGHT) {
 			pacMan.deplacementX((0.1 * i) / vitesse);
@@ -151,9 +156,10 @@ public class Jeu extends BasicGame {
 		}
 		// immobile
 		else if (pacMan.getDirection() == Direction.NEUTRE) {
-
+			// rien ?
 		}
 
 	}
+
 
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.5" orientation="orthogonal" renderorder="left-up" width="18" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" name="map_1" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
+  <image source="map_1.png" trans="ffffff" width="1024" height="1024"/>
+ </tileset>
+ <layer id="1" name="sols" width="18" height="24">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACmNgoB4opxCPmjNqzqg5o+aMmjMyzKEGAACGkC5twAYAAA==
+  </data>
+ </layer>
+ <layer id="2" name="murs" width="18" height="24">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACqWUiw2AIAxEMczoZxE/i/hZ0w3ERGJDeu0RLmmsgMeDgkMIYWyMKcUS2rUJn7v7nzKXbWVfzjUfT56PNq5kYXxKdpYP8Xjr0NgQj/Ze+lo+DJfWhuoueRAr68OwWXWX6uOfjxHPYdX91Sx81ojX6fHs6dvjizPiccw+W/eqdZ+zau+XxsnwaGO1ubJqzzNTL2ZPESNz3z1GxCP7rX9FzTlk9focKc7GuFI8/kkQHsAGAAA=
+  </data>
+ </layer>
+</map>
