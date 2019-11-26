@@ -17,23 +17,26 @@ public class Jeu extends BasicGame {
 
 	private int tilesSize;
 	private int mur;
+	// caracteristiques des entitées
 	private int numNiveau;
 	private int vitesse;
 	
 	// variable menu
-	//private StateBasedGame game;
+	// private StateBasedGame game;
+
+	// variable du fog of war
+	private boolean[][] fogOfWar;
+	int qteLignesFOW;
+	int qteColonnesFOW;
+	private int visibilityDistance;
 
 	public Jeu(String title) 
 	{
 		super(title);
 	}
 
-	public void render(GameContainer gc, Graphics grcs) throws SlickException {
-		map.render(0, 0);
-		pacMan.apparaitre();
-	}
-
 	public void init(GameContainer gc) throws SlickException {
+
 		// initialisation du niveau
 		numNiveau = 1;
 		
@@ -54,27 +57,68 @@ public class Jeu extends BasicGame {
 		case 5:
 			vitesse = 12;
 			break;
-
 		}
+
+
 		// génération de la map
 		map = new TiledMap("./map/map.tmx");
 		tilesSize = 32;
+
 		
 		//Menu
 		//this.game = game; //menu
 		//map = new TiledMap("./map/accueil.tmx");
 		
+		// initialisation des variables du fog of war
+		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
+		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
+		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
+
+		// initialisation du niveau
+		numNiveau = 3;
+		switch (numNiveau) {
+		case 1:
+			vitesse = 25;
+			break;
+		case 2:
+			vitesse = 21;
+			break;
+		case 3:
+			fillFogOfWar();
+			visibilityDistance = 8;
+			vitesse = 18;
+			break;
+		case 4:
+			fillFogOfWar();
+			visibilityDistance = 6;
+			vitesse = 13;
+			break;
+		case 5:
+			fillFogOfWar();
+			visibilityDistance = 4;
+			vitesse = 10;
+			break;
+
+		}
+
 		// génération des entitées
 		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 1, 2, Direction.DOWN);
 
+	}
+
+	public void render(GameContainer gc, Graphics grcs) throws SlickException {
+		map.render(0, 0);
+		pacMan.apparaitre();
+		// rendu du fog of war
+		obscurcir(grcs);
 	}
 
 	public void update(GameContainer gc, int i) throws SlickException {
 
 		int mur = map.getLayerIndex("murs");
 		// logs
-		System.out.println("x : " + pacMan.getPositionX());
-		System.out.println("y : " + pacMan.getPositionY());
+		// System.out.println("fog of war : " + fogOfWar[1][1]);
+		// System.out.println("y : " + pacMan.getPositionY());
 		// System.out.println( "X : " + pacMan.getPositionX());
 		// System.out.println(pacMan.getDirection());
 
@@ -135,6 +179,8 @@ public class Jeu extends BasicGame {
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
+		// pour enlever le brouillard
+		removeFogSquare(pacMan.getPositionYInt(), pacMan.getPositionXInt());
 
 		// ***************** Deplacement *****************
 		
@@ -161,5 +207,111 @@ public class Jeu extends BasicGame {
 
 	}
 
+	// initialise le fog of war
+	private void fillFogOfWar() {
+		System.out.println("oui, ca passe dans fillFogOfWar()");
+		for (int i = 0; i < qteLignesFOW; i++) {
+			for (int j = 0; j < qteColonnesFOW; j++) {
+				fogOfWar[i][j] = true;
+			}
+		}
+	}
+
+	// fait apparaitre les cases initialisées en noir.
+	private void obscurcir(Graphics grphcs) {
+		int qteLignes = fogOfWar.length;
+		int qteColonnes = fogOfWar[0].length;
+		int posX = tilesSize;
+		int posY = tilesSize;
+		grphcs.setColor(Color.darkGray);
+		for (int i = 0; i < qteLignes; i++) {
+			for (int j = 0; j < qteColonnes; j++) {
+				if (fogOfWar[i][j]) {
+					grphcs.fillRect(posX, posY, tilesSize, tilesSize);
+				}
+				posX += tilesSize;
+			}
+			posX = tilesSize;
+			posY += tilesSize;
+		}
+	}
+
+	// Enleve le fog of war selon les déplacements du personnage
+	private void removeFogSquare(int row, int column) {
+		int rowIndex = row - 1;
+		int columnIndex = column - 1;
+		fogOfWar[rowIndex][columnIndex] = false;
+
+		int min;
+		int max;
+		for (int i = 1; i < visibilityDistance; i++) {
+			switch (pacMan.getDirection()) {
+			case UP:
+				min = column - 1 - visibilityDistance / 2;
+				max = min + visibilityDistance;
+				if (min < 0) {
+					min = 0;
+				}
+				if (max > qteColonnesFOW) {
+					max = qteColonnesFOW;
+				}
+				rowIndex--;
+				for (int j = min; j < max; j++) {
+					if (rowIndex >= 0) {
+						fogOfWar[rowIndex][j] = false;
+					}
+				}
+				break;
+			case DOWN:
+				min = column - 1 - visibilityDistance / 2;
+				max = min + visibilityDistance;
+				if (min < 0) {
+					min = 0;
+				}
+				if (max > qteColonnesFOW) {
+					max = qteColonnesFOW;
+				}
+				rowIndex++;
+				for (int j = min; j < max; j++) {
+					if (rowIndex < qteLignesFOW) {
+						fogOfWar[rowIndex][j] = false;
+					}
+				}
+				break;
+			case RIGHT:
+				min = row - 1 - visibilityDistance / 2;
+				max = min + visibilityDistance;
+				if (min < 0) {
+					min = 0;
+				}
+				if (max > qteLignesFOW) {
+					max = qteLignesFOW;
+				}
+				columnIndex++;
+				for (int j = min; j < max; j++) {
+					if (columnIndex < qteColonnesFOW) {
+						fogOfWar[j][columnIndex] = false;
+					}
+				}
+				break;
+			case LEFT:
+				min = row - 1 - visibilityDistance / 2;
+				max = min + visibilityDistance;
+				if (min < 0) {
+					min = 0;
+				}
+				if (max > qteLignesFOW) {
+					max = qteLignesFOW;
+				}
+				columnIndex--;
+				for (int j = min; j < max; j++) {
+					if (columnIndex >= 0) {
+						fogOfWar[j][columnIndex] = false;
+					}
+				}
+				break;
+			}
+		}
+	}
 
 }
