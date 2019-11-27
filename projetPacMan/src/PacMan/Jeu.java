@@ -5,18 +5,24 @@ import java.util.LinkedList;
 
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
+//import org.newdawn.slick.state.StateBasedGame;
 
 public class Jeu extends BasicGame {
 
-	// déclaration variable
 	// variables par rapport à la map
 	private TiledMap map;
 	private TiledMap accueil;
+
 	private int tilesSize;
+	private int mur;
 	// caracteristiques des entitées
 	private Entite pacMan;
-	private int numNiveau;
 	private int vitesse;
+	private int numNiveau;
+
+	// variable menu
+	// private StateBasedGame game;
+
 	// variable du fog of war
 	private boolean[][] fogOfWar;
 	int qteLignesFOW;
@@ -28,10 +34,12 @@ public class Jeu extends BasicGame {
 	}
 
 	public void init(GameContainer gc) throws SlickException {
-
-		// génération de la map
-		//map = new TiledMap("./map/map.tmx");
 		tilesSize = 32;
+
+		// Menu
+		// this.game = game; //menu
+		// map = new TiledMap("./map/accueil.tmx");
+
 		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
@@ -90,71 +98,68 @@ public class Jeu extends BasicGame {
 		// System.out.println( "X : " + pacMan.getPositionX());
 		// System.out.println(pacMan.getDirection());
 
-		// controles
+		// Controle
 		Input input = gc.getInput();
 
-		// droite
-		if ((input.isKeyPressed(Input.KEY_D) 
-				|| input.isKeyPressed(Input.KEY_RIGHT))
+		// Droite
+		if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
 				&& map.getTileId(pacMan.getPositionXInt() + 1, pacMan.getPositionYInt(), mur) == 0) {
 			pacMan.setDirection(Direction.RIGHT);
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 		}
 		// gauche
-		if ((input.isKeyPressed(Input.KEY_A)
-				|| input.isKeyPressed(Input.KEY_LEFT))
+		if ((input.isKeyPressed(Input.KEY_A) || input.isKeyPressed(Input.KEY_LEFT))
 				&& map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0) {
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.LEFT);
 		}
 		// haut
-		if ((input.isKeyPressed(Input.KEY_W)
-				|| input.isKeyPressed(Input.KEY_UP))
+		if ((input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP))
 				&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() - 1, mur) == 0) {
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.UP);
 		}
 		// bas
-		if ((input.isKeyPressed(Input.KEY_S)
-				|| input.isKeyPressed(Input.KEY_DOWN))
+		if ((input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN))
 				&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() + 1, mur) == 0) {
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.DOWN);
 		}
 
-		// s'arrete si il y a un mur.
+		// s'arrete si il y a un mur
 		// verifi le coté droit
 		if (pacMan.getDirection() == Direction.RIGHT
 				&& map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) {
-			// pour que pac man sarrete a un chiffre rond
+			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté gauche
 		else if (pacMan.getDirection() == Direction.LEFT
 				&& map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), mur) != 0) {
-			// pour que pac man sarrete a un chiffre rond
+			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté haut
 		else if (pacMan.getDirection() == Direction.UP
 				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() - 1, mur) != 0) {
-			// pour que pac man sarrete a un chiffre rond
+			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// verifi le coté bas
 		else if (pacMan.getDirection() == Direction.DOWN
 				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() + 1, mur) != 0) {
-			// pour que pac man sarrete a un chiffre rond
+			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// pour enlever le brouillard
 		removeFogSquare(pacMan.getPositionYInt(), pacMan.getPositionXInt());
 
-		// deplacement********************************************************************************
+		// ***************** Deplacement *****************
+
 		// droite
 		if (pacMan.getDirection() == Direction.RIGHT) {
 			pacMan.deplacementX((0.1 * i) / vitesse);
@@ -173,7 +178,7 @@ public class Jeu extends BasicGame {
 		}
 		// immobile
 		else if (pacMan.getDirection() == Direction.NEUTRE) {
-
+			// rien ?
 		}
 
 	}
