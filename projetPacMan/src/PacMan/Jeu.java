@@ -3,27 +3,36 @@ package PacMan;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.swing.JButton;
+
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
-//import org.newdawn.slick.state.StateBasedGame;
 
-public class Jeu extends BasicGame {
+public class Jeu extends BasicGame 
+{
 
-
-	// variables par rapport à la map
+	// Variables par rapport à la map
 	private TiledMap map;
 	private TiledMap accueil;
 	private Entite pacMan;
-
+	
+	// Variable menu
+	private boolean isAccueil = false;
+	
+	//Fantomes
+	private Image fantomes;
+	private int fantomes_caseX;
+	private int fantomes_caseY;;
+	private int fantomes_movingStep;
+	private int fantomes_size;
+	
 	private int tilesSize;
 	private int mur;
+	
 	// caracteristiques des entitées
 	private int numNiveau;
 	private int vitesse;
 	
-	// variable menu
-	// private StateBasedGame game;
-
 	// variable du fog of war
 	private boolean[][] fogOfWar;
 	int qteLignesFOW;
@@ -34,40 +43,42 @@ public class Jeu extends BasicGame {
 	{
 		super(title);
 	}
-
-	public void init(GameContainer gc) throws SlickException {
-
-		// initialisation du niveau
-		numNiveau = 1;
-		
-		// initialisation selon le niveau
-		switch (numNiveau) {
-		case 1:
-			vitesse = 30;
-			break;
-		case 2:
-			vitesse = 25;
-			break;
-		case 3:
-			vitesse = 20;
-			break;
-		case 4:
-			vitesse = 15;
-			break;
-		case 5:
-			vitesse = 12;
-			break;
+	
+	// Animation fantomes
+	private Animation getAnimation(int rowY)
+	{
+		Animation anim = new Animation(false);
+		for(int x = 0; x < 5; x++)
+		{
+			anim.addFrame(fantomes.getSubImage(x*32, rowY*32, 32, 32), 50);
 		}
+		return anim;
+	}
 
-
-		// génération de la map
-		map = new TiledMap("./map/map.tmx");
-		tilesSize = 32;
-
+	public void init(GameContainer gc) throws SlickException 
+	{
+	
+		// Génération de la map
+		if (isAccueil == false) 
+		{
+			map = new TiledMap("./map/map.tmx");
+			tilesSize = 32;
+		}
 		
-		//Menu
-		//this.game = game; //menu
-		//map = new TiledMap("./map/accueil.tmx");
+		// Fantomes
+		fantomes = new Image("./image/hommes.png");
+		fantomes_caseX = 10;
+		fantomes_caseY = 10;
+		fantomes_movingStep = 1;
+		fantomes_size = tilesSize;
+		
+
+		// Menu
+		/*if (isAccueil == false)	
+		{
+			map = new TiledMap("./map/accueil.tmx");
+			tilesSize = 32;	
+		}*/
 		
 		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
@@ -75,7 +86,8 @@ public class Jeu extends BasicGame {
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
 
 		// initialisation du niveau
-		numNiveau = 3;
+		numNiveau = 1;
+		
 		switch (numNiveau) {
 		case 1:
 			vitesse = 25;
@@ -102,15 +114,17 @@ public class Jeu extends BasicGame {
 		}
 
 		// génération des entitées
-		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 1, 2, Direction.DOWN);
+		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
 
 	}
 
 	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
 		pacMan.apparaitre();
+		
 		// rendu du fog of war
 		obscurcir(grcs);
+
 	}
 
 	public void update(GameContainer gc, int i) throws SlickException {
@@ -207,7 +221,10 @@ public class Jeu extends BasicGame {
 
 	}
 
-	// initialise le fog of war
+	
+	
+	
+	// Initialise le Fog Of War
 	private void fillFogOfWar() {
 		System.out.println("oui, ca passe dans fillFogOfWar()");
 		for (int i = 0; i < qteLignesFOW; i++) {
@@ -217,7 +234,7 @@ public class Jeu extends BasicGame {
 		}
 	}
 
-	// fait apparaitre les cases initialisées en noir.
+	// Fait apparaitre les cases initialisées en noir
 	private void obscurcir(Graphics grphcs) {
 		int qteLignes = fogOfWar.length;
 		int qteColonnes = fogOfWar[0].length;
@@ -236,7 +253,7 @@ public class Jeu extends BasicGame {
 		}
 	}
 
-	// Enleve le fog of war selon les déplacements du personnage
+	// Enleve le Fog Of War selon les déplacements du personnage
 	private void removeFogSquare(int row, int column) {
 		int rowIndex = row - 1;
 		int columnIndex = column - 1;
