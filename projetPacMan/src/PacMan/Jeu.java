@@ -14,7 +14,6 @@ public class Jeu extends BasicGame
 	// Variables par rapport à la map
 	private TiledMap map;
 	private TiledMap accueil;
-	private Entite pacMan;
 	
 	// Variable menu
 	private boolean isAccueil = false;
@@ -30,7 +29,7 @@ public class Jeu extends BasicGame
 	private int mur;
 	
 	// caracteristiques des entitées
-	private int numNiveau;
+	private Entite pacMan;
 	private int vitesse;
 	
 	// variable du fog of war
@@ -39,8 +38,7 @@ public class Jeu extends BasicGame
 	int qteColonnesFOW;
 	private int visibilityDistance;
 
-	public Jeu(String title) 
-	{
+	public Jeu(String title) {
 		super(title);
 	}
 	
@@ -86,26 +84,31 @@ public class Jeu extends BasicGame
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
 
 		// initialisation du niveau
-		numNiveau = 1;
+		int numNiveau = 1;
 		
 		switch (numNiveau) {
 		case 1:
+			map = new TiledMap("./map/map.tmx");
 			vitesse = 25;
 			break;
 		case 2:
+			map = new TiledMap("./map/carte.tmx");
 			vitesse = 21;
 			break;
 		case 3:
+			map = new TiledMap("./map/map.tmx");
 			fillFogOfWar();
 			visibilityDistance = 8;
 			vitesse = 18;
 			break;
 		case 4:
+			map = new TiledMap("./map/map.tmx");
 			fillFogOfWar();
 			visibilityDistance = 6;
 			vitesse = 13;
 			break;
 		case 5:
+			map = new TiledMap("./map/map.tmx");
 			fillFogOfWar();
 			visibilityDistance = 4;
 			vitesse = 10;
@@ -140,25 +143,25 @@ public class Jeu extends BasicGame
 		Input input = gc.getInput();
 
 		// Droite
-		if (input.isKeyPressed(Input.KEY_D)
+		if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
 				&& map.getTileId(pacMan.getPositionXInt() + 1, pacMan.getPositionYInt(), mur) == 0) {
 			pacMan.setDirection(Direction.RIGHT);
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 		}
 		// gauche
-		if (input.isKeyPressed(Input.KEY_A)
+		if ((input.isKeyPressed(Input.KEY_A) || input.isKeyPressed(Input.KEY_LEFT))
 				&& map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0) {
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.LEFT);
 		}
 		// haut
-		if (input.isKeyPressed(Input.KEY_W)
+		if ((input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP))
 				&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() - 1, mur) == 0) {
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.UP);
 		}
 		// bas
-		if (input.isKeyPressed(Input.KEY_S)
+		if ((input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN))
 				&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() + 1, mur) == 0) {
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.DOWN);
@@ -197,7 +200,7 @@ public class Jeu extends BasicGame
 		removeFogSquare(pacMan.getPositionYInt(), pacMan.getPositionXInt());
 
 		// ***************** Deplacement *****************
-		
+
 		// droite
 		if (pacMan.getDirection() == Direction.RIGHT) {
 			pacMan.deplacementX((0.1 * i) / vitesse);
