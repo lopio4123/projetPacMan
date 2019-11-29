@@ -20,13 +20,13 @@ public class Main
 				
 				try 
 				{
-					AppGameContainer app = new AppGameContainer(new Jeu("Extrem PAC-MAN"));
+					AppGameContainer accueil = new AppGameContainer(new Accueil());
+			        accueil.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
+			        accueil.start();
+			        
+			        AppGameContainer app = new AppGameContainer(new Jeu("Extrem PAC-MAN"));
 					app.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
 					app.start();
-					
-					/*AppGameContainer accueil = new AppGameContainer(new Jeu("Extrem PAC-MAN"));
-					accueil.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
-					accueil.start();*/
 					
 				}
 				catch(SlickException ex) 
