@@ -82,14 +82,19 @@ public class Jeu extends BasicGame {
 		fantomes = new LinkedList<>();
 		for (int i = 0; i < 4; i++) {
 			if (i == 0)
-				fantomes.add(
-						new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
-			else if (i == 1) fantomes.add(new Fantomes("./image/sanic.png", tilesSize,
-			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
-			 else if (i == 2) fantomes.add(new Fantomes("./image/noob.jpg", tilesSize,
-			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
-			 else if (i == 3) fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize,
-			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+				fantomes.add(new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
+			/*
+			else if (i == 1)
+				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
+			else if (i == 2)
+				fantomes.add(new Fantomes("./image/noob.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse,
+						map));
+			else if (i == 3)
+				fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
+						*/
 		}
 
 	}
@@ -108,13 +113,13 @@ public class Jeu extends BasicGame {
 
 	public void update(GameContainer gc, int i) throws SlickException {
 
-		//logs
-		//System.out.println(map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0);
+		// logs
 		
+
 		// Controle
 		Input input = gc.getInput();
 		int mur = map.getLayerIndex("murs");
-
+		
 		// Droite
 		if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
 				&& map.getTileId(pacMan.getPositionXInt() + 1, pacMan.getPositionYInt(), mur) == 0) {
@@ -195,8 +200,11 @@ public class Jeu extends BasicGame {
 		else if (pacMan.getDirection() == Direction.NEUTRE) {
 
 		}
+		//tests
+				int sol = map.getLayerIndex("sols");
+				System.out.println(map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), sol));
 		// fantomes
-		
+
 		for (Fantomes fantome : fantomes) {
 			fantome.update(i);
 		}

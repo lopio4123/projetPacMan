@@ -7,10 +7,11 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
 
 public class Fantomes extends Entite {
-	//declaration variable
+	// declaration variable
 	private int vitesse;
 	private TiledMap map;
 	private int randomNum;
+
 	/*
 	 * int w = original_image.getWidth() nbCols; int h = original_image.getHeight()
 	 * nbRows; int x = thisCol*w; int y = thisRow*h; subImage = new getSubImage(x,
@@ -45,6 +46,13 @@ public class Fantomes extends Entite {
 		} else if (this.getDirection() == Direction.DOWN) {
 			this.deplacementY((0.1 * i) / vitesse);
 		}
+		//verifi si il peux tourner.
+		int sol = map.getLayerIndex("sols");
+		//verifi le coter gauche
+		
+		if ((this.getDirection() == Direction.UP || this.getDirection() == Direction.DOWN) && map.getTileId(this.getPositionXIntArret() - 1, this.getPositionYIntArret(), sol) == 0) {
+			//System.out.println("mur a gauche");
+		}
 		// arret vers un mur
 		int mur = map.getLayerIndex("murs");
 		//verifi le coter droit
@@ -76,21 +84,26 @@ public class Fantomes extends Entite {
 			this.setDirection(Direction.NEUTRE);
 		}
 	}
-	
-	//decide de sa direction
+
+	// decide de sa direction quand il est neutre.
 	private Direction decideDirection() {
-		
+
 		Direction direction = null;
-		Random rand = new Random(); 
+		Random rand = new Random();
 		int random = rand.nextInt(4);
-		if(random == 0) {direction = Direction.RIGHT;}
-		else if(random == 1) {direction = Direction.LEFT;}
-		else if(random == 2) {direction = Direction.UP;}
-		else if(random == 3) {direction = Direction.DOWN;}
+		if (random == 0) {
+			direction = Direction.RIGHT;
+		} else if (random == 1) {
+			direction = Direction.LEFT;
+		} else if (random == 2) {
+			direction = Direction.UP;
+		} else if (random == 3) {
+			direction = Direction.DOWN;
+		}
 		return direction;
-		
-		
-		
 	}
 
+	private Direction siTourne(Direction direction) {
+		return Direction.UP;
+	}
 }
