@@ -20,10 +20,11 @@ public class Main
 				
 				try 
 				{
+					/*
 					AppGameContainer accueil = new AppGameContainer(new Accueil());
 			        accueil.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
 			        accueil.start();
-			        
+			        */
 			        AppGameContainer app = new AppGameContainer(new Jeu("Extrem PAC-MAN"));
 					app.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
 					app.start();

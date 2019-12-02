@@ -1,6 +1,5 @@
 package PacMan;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -8,32 +7,34 @@ import javax.swing.JButton;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
 
-public class Jeu extends BasicGame 
-{
+public class Jeu extends BasicGame {
 
 	// Variables Map
 	private TiledMap map;
 	private TiledMap accueil;
 	private Entite pacMan;
-	private Entite fantomes;
 
 	private int tilesSize = 32;
 	private int mur;
-	private int vitessePacMan;
-	
+	private int vitesse;
+
 	// Variable du fog of war
 	private boolean[][] fogOfWar;
 	int qteLignesFOW;
 	int qteColonnesFOW;
 	private int visibilityDistance;
 
-	public Jeu(String title) 
-	{
+	// variables fantomes
+	private LinkedList<Fantomes> fantomes;
+
+	// variables points
+	private int points;
+
+	public Jeu(String title) {
 		super(title);
 	}
 
-	public void init(GameContainer gc) throws SlickException 
-	{		
+	public void init(GameContainer gc) throws SlickException {
 		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
@@ -41,49 +42,65 @@ public class Jeu extends BasicGame
 
 		// initialisation du niveau
 		int numNiveau = 1;
-		
+
 		switch (numNiveau) {
-		case 0: 
-			//map = new TiledMap("./map/accueil.tmx");
+		case 0:
+			// map = new TiledMap("./map/accueil.tmx");
 			break;
 		case 1:
 			map = new TiledMap("./map/map.tmx");
-			vitessePacMan = 25;
+			vitesse = 25;
+			points = map.getObjectGroupCount();
 			break;
 		case 2:
 			map = new TiledMap("./map/map.tmx");
-			vitessePacMan = 21;
+			vitesse = 21;
 			break;
 		case 3:
 			map = new TiledMap("./map/map.tmx");
 			fillFogOfWar();
 			visibilityDistance = 8;
-			vitessePacMan = 18;
+			vitesse = 18;
 			break;
 		case 4:
 			map = new TiledMap("./map/map.tmx");
 			fillFogOfWar();
 			visibilityDistance = 6;
-			vitessePacMan = 13;
+			vitesse = 13;
 			break;
 		case 5:
 			map = new TiledMap("./map/map.tmx");
 			fillFogOfWar();
 			visibilityDistance = 4;
-			vitessePacMan = 10;
+			vitesse = 10;
 			break;
 
 		}
-		
+
 		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
-		//fantomes = new Entite("./image/hommes.png", tilesSize, tilesSize, 9, 12, Direction.NEUTRE);
-		
+		// variables fantomes
+		fantomes = new LinkedList<>();
+		for (int i = 0; i < 4; i++) {
+			if (i == 0)
+				fantomes.add(
+						new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+			else if (i == 1) fantomes.add(new Fantomes("./image/sanic.png", tilesSize,
+			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+			 else if (i == 2) fantomes.add(new Fantomes("./image/noob.jpg", tilesSize,
+			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+			 else if (i == 3) fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize,
+			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+		}
+
 	}
 
 	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
 		pacMan.apparaitre();
-		
+		for (Fantomes fantome : fantomes) {
+			fantome.apparaitre();
+		}
+
 		// rendu du fog of war
 		obscurcir(grcs);
 
@@ -91,10 +108,12 @@ public class Jeu extends BasicGame
 
 	public void update(GameContainer gc, int i) throws SlickException {
 
-		int mur = map.getLayerIndex("murs");
-
+		//logs
+		//System.out.println(map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0);
+		
 		// Controle
 		Input input = gc.getInput();
+		int mur = map.getLayerIndex("murs");
 
 		// Droite
 		if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
@@ -122,31 +141,31 @@ public class Jeu extends BasicGame
 		}
 
 		// S'arrete s'il y a un mur
-		
+
 		// Verifie le coté droit
-		if (pacMan.getDirection() == Direction.RIGHT && map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) 
-		{
+		if (pacMan.getDirection() == Direction.RIGHT
+				&& map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) {
 			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// Verifie le coté gauche
-		else if (pacMan.getDirection() == Direction.LEFT && map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), mur) != 0) 
-		{
+		else if (pacMan.getDirection() == Direction.LEFT
+				&& map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), mur) != 0) {
 			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// Verifie le coté haut
-		else if (pacMan.getDirection() == Direction.UP && map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() - 1, mur) != 0) 
-		{
+		else if (pacMan.getDirection() == Direction.UP
+				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() - 1, mur) != 0) {
 			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
 		// Verifie le coté bas
-		else if (pacMan.getDirection() == Direction.DOWN && map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() + 1, mur) != 0) 
-		{
+		else if (pacMan.getDirection() == Direction.DOWN
+				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() + 1, mur) != 0) {
 			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
@@ -158,23 +177,28 @@ public class Jeu extends BasicGame
 
 		// droite
 		if (pacMan.getDirection() == Direction.RIGHT) {
-			pacMan.deplacementX((0.1 * i) / vitessePacMan);
+			pacMan.deplacementX((0.1 * i) / vitesse);
 		}
 		// gauche
 		else if (pacMan.getDirection() == Direction.LEFT) {
-			pacMan.deplacementX((-0.1 * i) / vitessePacMan);
+			pacMan.deplacementX((-0.1 * i) / vitesse);
 		}
 		// haut
 		else if (pacMan.getDirection() == Direction.UP) {
-			pacMan.deplacementY((-0.1 * i) / vitessePacMan);
+			pacMan.deplacementY((-0.1 * i) / vitesse);
 		}
 		// bas
 		else if (pacMan.getDirection() == Direction.DOWN) {
-			pacMan.deplacementY((0.1 * i) / vitessePacMan);
+			pacMan.deplacementY((0.1 * i) / vitesse);
 		}
 		// immobile
 		else if (pacMan.getDirection() == Direction.NEUTRE) {
-			
+
+		}
+		// fantomes
+		
+		for (Fantomes fantome : fantomes) {
+			fantome.update(i);
 		}
 
 	}
