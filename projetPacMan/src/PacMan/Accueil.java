@@ -2,88 +2,96 @@ package PacMan;
 
 import java.awt.Font;
 import org.newdawn.slick.*;
+import org.newdawn.slick.tiled.TiledMap;
 
 public class Accueil extends BasicGame {
 
-    private int playersChoice = 0;
-    private static final int START = 0;
-    private static final int SAVE = 1;
-    private static final int LOAD = 2;
-    private static final int OPTIONS = 3;
-    private static final int QUIT = 4;
-    private static final int NOCHOICES = 5;
-    private String[] playersOptions = new String[NOCHOICES];
+	private int playersChoice = 1;
+	//private int choice = 0;
     private boolean exit = false;
-    private Font font;
-    private TrueTypeFont playersOptionsTTF, foo;
-    private Color notChosen = new Color(153, 204, 255);
+	private boolean play = false;
+	private boolean propos = false;
+    
+    private TiledMap map;
+    private Image buttonPlay;
+    private Image buttonExit;
 
-    public Accueil() {
-        super("Slick2D Main Menu Example");
+    public Accueil() 
+    {
+        super("Main Menu");
     }
 
     @Override
-    public void init(GameContainer gc) throws SlickException {
-        font = new Font("Verdana", Font.BOLD, 40);
-        playersOptionsTTF = new TrueTypeFont(font, true);
-        font = new Font ("Verdana", Font.PLAIN, 20);
-        foo = new TrueTypeFont(font, true);
-        playersOptions[0] = "Start";
-        playersOptions[1] = "Save";
-        playersOptions[2] = "Load";
-        playersOptions[3] = "Options";
-        playersOptions[4] = "Quit";
+    public void init(GameContainer gc) throws SlickException 
+    {
+    	map = new TiledMap("./map/accueil.tmx");
+    	buttonPlay = new Image("./image/play.png");
+    	buttonExit = new Image("./image/exit - Copie.png");
     }
 
     @Override
-    public void update(GameContainer gc, int delta) throws SlickException {
+    public void update(GameContainer gc, int delta) throws SlickException 
+    {
         Input input = gc.getInput();
-        if (input.isKeyPressed(Input.KEY_DOWN)) {
-            if (playersChoice == (NOCHOICES - 1)) {
-                playersChoice = 0;
-            } else {
+                
+        if (input.isKeyPressed(Input.KEY_DOWN)) // Descendre / exit
+        {
+        	if (playersChoice == 0) 
+            {
+               System.out.println("Down");
+            } 
+            else 
+            {
                 playersChoice++;
             }
         }
-        if (input.isKeyPressed(Input.KEY_UP)) {
-            if (playersChoice == 0) {
-                playersChoice = NOCHOICES - 1;
-            } else {
+        if (input.isKeyPressed(Input.KEY_UP)) // Monter / play
+        {
+        	if (playersChoice == 0) 
+            {
+               System.out.println("Up");
+            } 
+            else 
+            {
                 playersChoice--;
             }
         }
-        if (input.isKeyPressed(Input.KEY_ENTER)) {
-            switch (playersChoice) {
-                case QUIT:
-                    exit = true;
+        if (input.isKeyPressed(Input.KEY_ENTER)) 
+        {
+            switch (playersChoice) 
+            {
+                case 0:
+                    this.play = true;
                     break;
+                case 1:
+                	this.exit = true;
+                	break;
+                case 2:
+                	this.propos = true;
+                	break;
             }
         }
     }
 
     @Override
-    public void render(GameContainer gc, Graphics g) throws SlickException {
-        renderPlayersOptions();
-        if (exit) {
+    public void render(GameContainer gc, Graphics g) throws SlickException 
+    {
+        map.render(0, 0);
+        buttonPlay.draw(190, 250, 200, 100);
+        buttonExit.draw(195, 400, 200, 100);
+        //g.drawString("Hello", 50, 50);
+        
+        if (exit) 
+        {
             gc.exit();
         }
-    }
-
-    public static void main(String[] args)
-            throws SlickException {
-        AppGameContainer app =
-                new AppGameContainer(new Accueil());
-        app.setDisplayMode(800, 600, true);
-        app.start();
-    }
-
-    private void renderPlayersOptions() {
-        for (int i = 0; i < NOCHOICES; i++) {
-            if (playersChoice == i) {
-                playersOptionsTTF.drawString(100, i * 50 + 200, playersOptions[i]);
-            } else {
-                playersOptionsTTF.drawString(100, i * 50 + 200, playersOptions[i], notChosen);
-            }
+        if (play)
+        {
+        	gc.pause();
         }
     }
+    
+ 
+
+    
 }

@@ -1,6 +1,5 @@
 package PacMan;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -8,76 +7,34 @@ import javax.swing.JButton;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
 
-public class Jeu extends BasicGame 
-{
+public class Jeu extends BasicGame {
 
-	// Variables par rapport à la map
+	// Variables Map
 	private TiledMap map;
 	private TiledMap accueil;
-	
-	// Variable menu
-	private boolean isAccueil = false;
-	
-	//Fantomes
-	private Image fantomes;
-	private int fantomes_caseX;
-	private int fantomes_caseY;;
-	private int fantomes_movingStep;
-	private int fantomes_size;
-	
-	private int tilesSize;
-	private int mur;
-	
-	// caracteristiques des entitées
 	private Entite pacMan;
+
+	private int tilesSize = 32;
+	private int mur;
 	private int vitesse;
-	
-	// variable du fog of war
+
+	// Variable du fog of war
 	private boolean[][] fogOfWar;
 	int qteLignesFOW;
 	int qteColonnesFOW;
 	private int visibilityDistance;
 
+	// variables fantomes
+	private LinkedList<Fantomes> fantomes;
+
+	// variables points
+	private int points;
+
 	public Jeu(String title) {
 		super(title);
 	}
-	
-	// Animation fantomes
-	private Animation getAnimation(int rowY)
-	{
-		Animation anim = new Animation(false);
-		for(int x = 0; x < 5; x++)
-		{
-			anim.addFrame(fantomes.getSubImage(x*32, rowY*32, 32, 32), 50);
-		}
-		return anim;
-	}
 
-	public void init(GameContainer gc) throws SlickException 
-	{
-	
-		// Génération de la map
-		if (isAccueil == false) 
-		{
-			map = new TiledMap("./map/map.tmx");
-			tilesSize = 32;
-		}
-		
-		// Fantomes
-		fantomes = new Image("./image/hommes.png");
-		fantomes_caseX = 10;
-		fantomes_caseY = 10;
-		fantomes_movingStep = 1;
-		fantomes_size = tilesSize;
-		
-
-		// Menu
-		/*if (isAccueil == false)	
-		{
-			map = new TiledMap("./map/accueil.tmx");
-			tilesSize = 32;	
-		}*/
-		
+	public void init(GameContainer gc) throws SlickException {
 		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
@@ -85,14 +42,18 @@ public class Jeu extends BasicGame
 
 		// initialisation du niveau
 		int numNiveau = 1;
-		
+
 		switch (numNiveau) {
+		case 0:
+			// map = new TiledMap("./map/accueil.tmx");
+			break;
 		case 1:
 			map = new TiledMap("./map/map.tmx");
 			vitesse = 25;
+			points = map.getObjectGroupCount();
 			break;
 		case 2:
-			map = new TiledMap("./map/carte.tmx");
+			map = new TiledMap("./map/map.tmx");
 			vitesse = 21;
 			break;
 		case 3:
@@ -116,15 +77,30 @@ public class Jeu extends BasicGame
 
 		}
 
-		// génération des entitées
 		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
+		// variables fantomes
+		fantomes = new LinkedList<>();
+		for (int i = 0; i < 4; i++) {
+			if (i == 0)
+				fantomes.add(
+						new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+			else if (i == 1) fantomes.add(new Fantomes("./image/sanic.png", tilesSize,
+			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+			 else if (i == 2) fantomes.add(new Fantomes("./image/noob.jpg", tilesSize,
+			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+			 else if (i == 3) fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize,
+			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+		}
 
 	}
 
 	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
 		pacMan.apparaitre();
-		
+		for (Fantomes fantome : fantomes) {
+			fantome.apparaitre();
+		}
+
 		// rendu du fog of war
 		obscurcir(grcs);
 
@@ -132,15 +108,12 @@ public class Jeu extends BasicGame
 
 	public void update(GameContainer gc, int i) throws SlickException {
 
-		int mur = map.getLayerIndex("murs");
-		// logs
-		// System.out.println("fog of war : " + fogOfWar[1][1]);
-		// System.out.println("y : " + pacMan.getPositionY());
-		// System.out.println( "X : " + pacMan.getPositionX());
-		// System.out.println(pacMan.getDirection());
-
+		//logs
+		//System.out.println(map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0);
+		
 		// Controle
 		Input input = gc.getInput();
+		int mur = map.getLayerIndex("murs");
 
 		// Droite
 		if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
@@ -148,58 +121,59 @@ public class Jeu extends BasicGame
 			pacMan.setDirection(Direction.RIGHT);
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 		}
-		// gauche
+		// Gauche
 		if ((input.isKeyPressed(Input.KEY_A) || input.isKeyPressed(Input.KEY_LEFT))
 				&& map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0) {
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.LEFT);
 		}
-		// haut
+		// Haut
 		if ((input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP))
 				&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() - 1, mur) == 0) {
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.UP);
 		}
-		// bas
+		// Bas
 		if ((input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN))
 				&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() + 1, mur) == 0) {
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.DOWN);
 		}
 
-		// s'arrete si il y a un mur
-		// verifi le coté droit
+		// S'arrete s'il y a un mur
+
+		// Verifie le coté droit
 		if (pacMan.getDirection() == Direction.RIGHT
 				&& map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) {
 			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
-		// verifi le coté gauche
+		// Verifie le coté gauche
 		else if (pacMan.getDirection() == Direction.LEFT
 				&& map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), mur) != 0) {
 			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
-		// verifi le coté haut
+		// Verifie le coté haut
 		else if (pacMan.getDirection() == Direction.UP
 				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() - 1, mur) != 0) {
 			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
-		// verifi le coté bas
+		// Verifie le coté bas
 		else if (pacMan.getDirection() == Direction.DOWN
 				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() + 1, mur) != 0) {
 			// pour que pac man s'arrete a un chiffre rond
 			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			pacMan.setDirection(Direction.NEUTRE);
 		}
-		// pour enlever le brouillard
+		// Pour enlever le brouillard
 		removeFogSquare(pacMan.getPositionYInt(), pacMan.getPositionXInt());
 
-		// ***************** Deplacement *****************
+		// ***************** Déplacement *****************
 
 		// droite
 		if (pacMan.getDirection() == Direction.RIGHT) {
@@ -219,14 +193,16 @@ public class Jeu extends BasicGame
 		}
 		// immobile
 		else if (pacMan.getDirection() == Direction.NEUTRE) {
-			// rien ?
+
+		}
+		// fantomes
+		
+		for (Fantomes fantome : fantomes) {
+			fantome.update(i);
 		}
 
 	}
 
-	
-	
-	
 	// Initialise le Fog Of War
 	private void fillFogOfWar() {
 		System.out.println("oui, ca passe dans fillFogOfWar()");
