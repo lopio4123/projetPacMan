@@ -6,36 +6,36 @@ import java.util.Random;
 import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
 
-public class Fantomes extends Entite {
-	//declaration variable
+public class Fantomes extends Entite 
+{
+	// Declaration variable
+	
 	private int vitesse;
 	private TiledMap map;
 	private int randomNum;
-	/*
-	 * int w = original_image.getWidth() nbCols; int h = original_image.getHeight()
-	 * nbRows; int x = thisCol*w; int y = thisRow*h; subImage = new getSubImage(x,
-	 * y, w, h); **
-	 * 
-	 * private int playersChoice = 1; //private int choice = 0; private boolean exit
-	 * = false; private boolean play = false; private boolean propos = false;
-	 * 
-	 * private TiledMap map; private Image buttonPlay; private Image buttonExit;
-	 * 
-	 */
-	// constructeur
-	public Fantomes(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction,
-			int vitesse, TiledMap map) throws SlickException {
+	
+	/*int w = original_image.getWidth() nbCols; int h = original_image.getHeight()
+	nbRows; int x = thisCol*w; int y = thisRow*h; subImage = new getSubImage(x,y, w, h);
+	private int playersChoice = 1; //private int choice = 0; private boolean exit
+	= false; private boolean play = false; private boolean propos = false;
+	private TiledMap map; private Image buttonPlay; private Image buttonExit;
+	*/
+	
+	// Constructeur
+	public Fantomes(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction, int vitesse, TiledMap map) throws SlickException 
+	{
 		super(image, grandeur, grandeurTiles, positionX, positionY, direction);
 		this.vitesse = vitesse;
 		this.map = map;
 	}
 
-	public void update(int i) {
-		//verifi si sa direction est neutre et en choisi une nouvelle
+	public void update(int i) 
+	{
+		// Verifi si sa direction est neutre et en choisi une nouvelle
 		if (this.getDirection() == Direction.NEUTRE) {
 			this.setDirection(this.decideDirection());
 		}
-		// deplacement
+		// Deplacement
 		if (this.getDirection() == Direction.RIGHT) {
 			this.deplacementX((0.1 * i) / vitesse);
 		} else if (this.getDirection() == Direction.LEFT) {
@@ -45,6 +45,7 @@ public class Fantomes extends Entite {
 		} else if (this.getDirection() == Direction.DOWN) {
 			this.deplacementY((0.1 * i) / vitesse);
 		}
+		
 		// arret vers un mur
 		int mur = map.getLayerIndex("murs");
 		//verifi le coter droit
@@ -78,8 +79,8 @@ public class Fantomes extends Entite {
 	}
 	
 	//decide de sa direction
-	private Direction decideDirection() {
-		
+	private Direction decideDirection() 
+	{
 		Direction direction = null;
 		Random rand = new Random(); 
 		int random = rand.nextInt(4);
@@ -87,10 +88,7 @@ public class Fantomes extends Entite {
 		else if(random == 1) {direction = Direction.LEFT;}
 		else if(random == 2) {direction = Direction.UP;}
 		else if(random == 3) {direction = Direction.DOWN;}
-		return direction;
-		
-		
-		
+		return direction;	
 	}
 
 }

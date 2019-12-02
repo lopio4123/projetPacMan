@@ -1,9 +1,6 @@
 package PacMan;
 
 import java.util.LinkedList;
-
-import javax.swing.JButton;
-
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
 
@@ -23,25 +20,33 @@ public class Jeu extends BasicGame {
 	int qteLignesFOW;
 	int qteColonnesFOW;
 	private int visibilityDistance;
+	
+	// Variable Petit Point
+	private boolean[][] littlePoint;
+	int qteLignesLittlePoint;
+	int qteColonnesLittlePoint;
 
-	// variables fantomes
+	// Variables fantomes
 	private LinkedList<Fantomes> fantomes;
 
-	// variables points
-	private int points;
-
-	public Jeu(String title) {
+	public Jeu(String title) 
+	{
 		super(title);
 	}
 
-	public void init(GameContainer gc) throws SlickException {
-		// initialisation des variables du fog of war
+	public void init(GameContainer gc) throws SlickException 
+	{
+		// Initialisation des variables du Fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
 
+		qteLignesLittlePoint = (gc.getHeight() - 2 * tilesSize) / tilesSize;
+		qteColonnesLittlePoint = (gc.getWidth() - 2 * tilesSize) / tilesSize;
+		littlePoint = new boolean[qteLignesLittlePoint][qteColonnesLittlePoint];
+
 		// initialisation du niveau
-		int numNiveau = 1;
+		int numNiveau = 3; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
 
 		switch (numNiveau) {
 		case 0:
@@ -49,8 +54,8 @@ public class Jeu extends BasicGame {
 			break;
 		case 1:
 			map = new TiledMap("./map/map.tmx");
+			fillLittlePoint();
 			vitesse = 25;
-			points = map.getObjectGroupCount();
 			break;
 		case 2:
 			map = new TiledMap("./map/map.tmx");
@@ -78,9 +83,12 @@ public class Jeu extends BasicGame {
 		}
 
 		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
+			
 		// variables fantomes
 		fantomes = new LinkedList<>();
-		for (int i = 0; i < 4; i++) {
+		
+		for (int i = 0; i < 4; i++)
+		{
 			if (i == 0)
 				fantomes.add(
 						new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
@@ -92,25 +100,31 @@ public class Jeu extends BasicGame {
 			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
 		}
 
+		//rendu petit image
+		//genererPoints(grcs);
+
 	}
 
 	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
 		pacMan.apparaitre();
-		for (Fantomes fantome : fantomes) {
+		
+		for (Fantomes fantome : fantomes) 
+		{
 			fantome.apparaitre();
 		}
 
 		// rendu du fog of war
 		obscurcir(grcs);
+		
+		// rendu petit image
+		genererPoints(grcs);
+		
 
 	}
 
 	public void update(GameContainer gc, int i) throws SlickException {
 
-		//logs
-		//System.out.println(map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0);
-		
 		// Controle
 		Input input = gc.getInput();
 		int mur = map.getLayerIndex("murs");
@@ -202,12 +216,17 @@ public class Jeu extends BasicGame {
 		}
 
 	}
+	
+	// ************************** FOG OF WAR ******************************
 
 	// Initialise le Fog Of War
-	private void fillFogOfWar() {
+	private void fillFogOfWar() 
+	{
 		System.out.println("oui, ca passe dans fillFogOfWar()");
-		for (int i = 0; i < qteLignesFOW; i++) {
-			for (int j = 0; j < qteColonnesFOW; j++) {
+		for (int i = 0; i < qteLignesFOW; i++) 
+		{
+			for (int j = 0; j < qteColonnesFOW; j++)
+			{
 				fogOfWar[i][j] = true;
 			}
 		}
@@ -222,7 +241,8 @@ public class Jeu extends BasicGame {
 		grphcs.setColor(Color.darkGray);
 		for (int i = 0; i < qteLignes; i++) {
 			for (int j = 0; j < qteColonnes; j++) {
-				if (fogOfWar[i][j]) {
+				if (fogOfWar[i][j]) 
+				{
 					grphcs.fillRect(posX, posY, tilesSize, tilesSize);
 				}
 				posX += tilesSize;
@@ -233,7 +253,8 @@ public class Jeu extends BasicGame {
 	}
 
 	// Enleve le Fog Of War selon les déplacements du personnage
-	private void removeFogSquare(int row, int column) {
+	private void removeFogSquare(int row, int column) 
+	{
 		int rowIndex = row - 1;
 		int columnIndex = column - 1;
 		fogOfWar[rowIndex][columnIndex] = false;
@@ -310,4 +331,43 @@ public class Jeu extends BasicGame {
 		}
 	}
 
+	
+	// ************************** PETITS POINTS ******************************
+	
+	// Initialise les petits points
+	private void fillLittlePoint()
+	{
+		System.out.println("yes");
+		for (int i = 0; i < qteLignesLittlePoint; i++)
+		{
+			for (int j = 0; j < qteColonnesLittlePoint; j++) 
+			{
+				littlePoint[i][j] = true;
+			}
+		}
+	}
+	
+	private void genererPoints(Graphics grphcs)
+	{
+		
+		int qteLignes = littlePoint.length;
+		int qteColonnes = littlePoint[0].length;
+		int posX = tilesSize;
+		int posY = tilesSize;
+		//grphcs.draw(petitPoint);
+		
+		grphcs.setColor(Color.blue);
+		for (int i = 0; i < qteLignes; i++) {
+			for (int j = 0; j < qteColonnes; j++) {
+				if (littlePoint[i][j]) {
+					grphcs.fillRect(posX, posY, tilesSize, tilesSize);
+				}
+				posX += tilesSize;
+			}
+			posX = tilesSize;
+			posY += tilesSize;
+		}
+		
+	}
+	
 }
