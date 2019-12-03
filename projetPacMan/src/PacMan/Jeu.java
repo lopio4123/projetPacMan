@@ -46,7 +46,7 @@ public class Jeu extends BasicGame {
 		littlePoint = new boolean[qteLignesLittlePoint][qteColonnesLittlePoint];
 
 		// initialisation du niveau
-		int numNiveau = 3; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
+		int numNiveau = 2; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
 
 		switch (numNiveau) {
 		case 0:
@@ -54,7 +54,7 @@ public class Jeu extends BasicGame {
 			break;
 		case 1:
 			map = new TiledMap("./map/map.tmx");
-			//fillLittlePoint();
+			fillLittlePoint();
 			vitesse = 25;
 			break;
 		case 2:
@@ -90,7 +90,7 @@ public class Jeu extends BasicGame {
 		for (int i = 0; i < 4; i++)
 		{
 			if (i == 0)fantomes.add(new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
-			/*
+			
 			else if (i == 1)
 				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
 						vitesse, map));
@@ -100,7 +100,7 @@ public class Jeu extends BasicGame {
 			else if (i == 3)
 				fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
 						vitesse, map));
-						*/
+						
 		}
 
 		//rendu petit image
@@ -120,8 +120,10 @@ public class Jeu extends BasicGame {
 		// rendu du fog of war
 		obscurcir(grcs);
 		
-		// rendu petit image
-		//if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, mur) != 0)
+		int sols = map.getLayerIndex("sols");
+		
+		// rendu petit point
+		//if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, sols) == 0)
 		//{
 			genererPoints(grcs);
 		//}
@@ -243,7 +245,7 @@ public class Jeu extends BasicGame {
 
 	// Fait apparaitre les cases initialisées en noir
 	private void obscurcir(Graphics grphcs) {
-		int qteLignes = fogOfWar.length;
+		int qteLignes = fogOfWar.length - 1;
 		int qteColonnes = fogOfWar[0].length;
 		int posX = tilesSize;
 		int posY = tilesSize;
@@ -358,18 +360,19 @@ public class Jeu extends BasicGame {
 	
 	private void genererPoints(Graphics grphcs)
 	{
-		int qteLignes = littlePoint[0].length;
+		int qteLignes = littlePoint.length - 1 ;
 		int qteColonnes = littlePoint[0].length;
 		int posX = tilesSize;
 		int posY = tilesSize;
 		//grphcs.draw(petitPoint);
 		//if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, mur) != 0)
 			
-		grphcs.setColor(Color.blue);
+		grphcs.setColor(Color.orange);
 
 		for (int i = 0; i < qteLignes; i++) {
 			for (int j = 0; j < qteColonnes; j++) {
-				if (littlePoint[i][j]) {
+				if (littlePoint[i][j]) 
+				{
 					grphcs.fillRect(posX, posY, tilesSize, tilesSize);
 				}
 				posX += tilesSize;
