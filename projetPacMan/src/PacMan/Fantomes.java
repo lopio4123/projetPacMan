@@ -6,10 +6,9 @@ import java.util.Random;
 import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
 
-public class Fantomes extends Entite 
-{
-	// Declaration variable
-	
+
+public class Fantomes extends Entite {
+	// declaration variable
 	private int vitesse;
 	private TiledMap map;
 	private int randomNum;
@@ -21,9 +20,10 @@ public class Fantomes extends Entite
 	private TiledMap map; private Image buttonPlay; private Image buttonExit;
 	*/
 	
+
 	// Constructeur
-	public Fantomes(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction, int vitesse, TiledMap map) throws SlickException 
-	{
+	public Fantomes(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction,
+			int vitesse, TiledMap map) throws SlickException {
 		super(image, grandeur, grandeurTiles, positionX, positionY, direction);
 		this.vitesse = vitesse;
 		this.map = map;
@@ -46,6 +46,13 @@ public class Fantomes extends Entite
 			this.deplacementY((0.1 * i) / vitesse);
 		}
 		
+		//verifi si il peux tourner.
+		int sol = map.getLayerIndex("sols");
+		//verifi le coter gauche
+		
+		if ((this.getDirection() == Direction.UP || this.getDirection() == Direction.DOWN) && map.getTileId(this.getPositionXIntArret() - 1, this.getPositionYIntArret(), sol) == 0) {
+			//System.out.println("mur a gauche");
+		}
 		// arret vers un mur
 		int mur = map.getLayerIndex("murs");
 		//verifi le coter droit
@@ -78,17 +85,22 @@ public class Fantomes extends Entite
 		}
 	}
 	
-	//decide de sa direction
-	private Direction decideDirection() 
-	{
+
+	// decide de sa direction quand il est neutre.
+	private Direction decideDirection() {
+
 		Direction direction = null;
-		Random rand = new Random(); 
+		Random rand = new Random();
 		int random = rand.nextInt(4);
 		if(random == 0) {direction = Direction.RIGHT;}
 		else if(random == 1) {direction = Direction.LEFT;}
 		else if(random == 2) {direction = Direction.UP;}
 		else if(random == 3) {direction = Direction.DOWN;}
 		return direction;	
+
 	}
 
+	private Direction siTourne(Direction direction) {
+		return Direction.UP;
+	}
 }

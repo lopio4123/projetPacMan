@@ -5,7 +5,12 @@
  </tileset>
  <layer id="1" name="sols" width="18" height="24">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACmNgoB4opxCPmjNqzqg5o+aMmjMyzKEGAACGkC5twAYAAA==
+   H4sIAAAAAAAACq2TUQ7AIAhDufWu7+9CaHkiJCZTRyktRuzF97j+OAHO8p3LIbUdTvVf5kJwqpjoQ/ug3NQ+43bedLyI5jdcKQ7VjOrc9db5Tr2b8Ll9X24uVY7Cmb415wWp7frp5s/pQ7Ws9sp3961qTP0m9RRHl7sxhxtxAP/ypBHABgAA
+  </data>
+ </layer>
+ <layer name="solSousMur" width="18" height="24">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACs2USw6AIAxESbz/MbynKyNp2plX0MTZ8J++UMoY/9R5PO3cn+fi2t3PfFbiuX2RhfhEdspH5e5I8WTj6Kt8CBedq/Jf3bXzIWyruaAxXM5dDt6UqylVf8qnE5tyZZyEh+7tMmYctN6rsyRmV4pnXld/xdfvcFcXU1ywfsAGAAA=
   </data>
  </layer>
  <layer id="2" name="murs" width="18" height="24">

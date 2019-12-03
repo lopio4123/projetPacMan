@@ -54,7 +54,7 @@ public class Jeu extends BasicGame {
 			break;
 		case 1:
 			map = new TiledMap("./map/map.tmx");
-			fillLittlePoint();
+			//fillLittlePoint();
 			vitesse = 25;
 			break;
 		case 2:
@@ -89,15 +89,18 @@ public class Jeu extends BasicGame {
 		
 		for (int i = 0; i < 4; i++)
 		{
-			if (i == 0)
-				fantomes.add(
-						new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
-			else if (i == 1) fantomes.add(new Fantomes("./image/sanic.png", tilesSize,
-			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
-			 else if (i == 2) fantomes.add(new Fantomes("./image/noob.jpg", tilesSize,
-			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
-			 else if (i == 3) fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize,
-			 tilesSize, 9 + i, 22, Direction.RIGHT, vitesse, map));
+			if (i == 0)fantomes.add(new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
+			/*
+			else if (i == 1)
+				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
+			else if (i == 2)
+				fantomes.add(new Fantomes("./image/noob.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse,
+						map));
+			else if (i == 3)
+				fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
+						*/
 		}
 
 		//rendu petit image
@@ -118,17 +121,20 @@ public class Jeu extends BasicGame {
 		obscurcir(grcs);
 		
 		// rendu petit image
-		genererPoints(grcs);
+		//if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, mur) != 0)
+		//{
+			genererPoints(grcs);
+		//}
 		
 
 	}
 
 	public void update(GameContainer gc, int i) throws SlickException {
-
+		
 		// Controle
 		Input input = gc.getInput();
 		int mur = map.getLayerIndex("murs");
-
+		
 		// Droite
 		if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
 				&& map.getTileId(pacMan.getPositionXInt() + 1, pacMan.getPositionYInt(), mur) == 0) {
@@ -209,8 +215,11 @@ public class Jeu extends BasicGame {
 		else if (pacMan.getDirection() == Direction.NEUTRE) {
 
 		}
+		//tests
+				int sol = map.getLayerIndex("sols");
+				System.out.println(map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), sol));
 		// fantomes
-		
+
 		for (Fantomes fantome : fantomes) {
 			fantome.update(i);
 		}
@@ -349,14 +358,15 @@ public class Jeu extends BasicGame {
 	
 	private void genererPoints(Graphics grphcs)
 	{
-		
-		int qteLignes = littlePoint.length;
+		int qteLignes = littlePoint[0].length;
 		int qteColonnes = littlePoint[0].length;
 		int posX = tilesSize;
 		int posY = tilesSize;
 		//grphcs.draw(petitPoint);
-		
+		//if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, mur) != 0)
+			
 		grphcs.setColor(Color.blue);
+
 		for (int i = 0; i < qteLignes; i++) {
 			for (int j = 0; j < qteColonnes; j++) {
 				if (littlePoint[i][j]) {

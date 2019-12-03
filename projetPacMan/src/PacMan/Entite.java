@@ -78,23 +78,6 @@ public class Entite {
 	}
 	//sert à s'arreter à une bonne distance du mur...
 	
-	public int getPositionXArret(){
-		int positionXInt = Math.round(positionX);
-		int i = new Float(positionX).intValue();
-		
-		float decimale = positionX-(new Float(i).floatValue());
-		
-		System.out.println(decimale);
-		if (decimale > 0.1) {
-			return Math.round(positionX);
-		}
-		
-		else {
-			return (Math.round(positionX) - 1);
-		}
-		
-	}
-	
 	public int getPositionXInt() {
 		return Math.round(positionX);
 	}
