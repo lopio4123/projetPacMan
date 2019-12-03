@@ -1,6 +1,10 @@
 package PacMan;
 
 import java.awt.Font;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
 import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
 
@@ -15,7 +19,7 @@ public class Accueil extends BasicGame {
     private TiledMap map;
     private Image buttonPlay;
     private Image buttonExit;
-
+    
     public Accueil() 
     {
         super("Main Menu");
@@ -26,7 +30,7 @@ public class Accueil extends BasicGame {
     {
     	map = new TiledMap("./map/accueil.tmx");
     	buttonPlay = new Image("./image/play.png");
-    	buttonExit = new Image("./image/exit - Copie.png");
+    	buttonExit = new Image("./image/exit2.png");
     }
 
     @Override
@@ -78,7 +82,7 @@ public class Accueil extends BasicGame {
     {
         map.render(0, 0);
         buttonPlay.draw(190, 250, 200, 100);
-        buttonExit.draw(195, 400, 200, 100);
+        buttonExit.draw(190, 400, 200, 100);
         //g.drawString("Hello", 50, 50);
         
         if (exit) 
