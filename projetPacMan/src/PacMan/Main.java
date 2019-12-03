@@ -21,12 +21,13 @@ public class Main
 				try 
 				{
 					
-					/*AppGameContainer accueil = new AppGameContainer(new Accueil());
+					AppGameContainer accueil = new AppGameContainer(new Accueil());
 			        accueil.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
-			        accueil.start();*/
+			        accueil.start();
 			        
 			        AppGameContainer app = new AppGameContainer(new Jeu("Extrem PAC-MAN"));
 					app.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
+					app.setTargetFrameRate(60);
 					app.start();
 					
 				}

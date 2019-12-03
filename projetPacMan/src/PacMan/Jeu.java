@@ -1,6 +1,9 @@
 package PacMan;
 
 import java.util.LinkedList;
+
+import javax.swing.JButton;
+
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
 
@@ -21,30 +24,32 @@ public class Jeu extends BasicGame {
 	int qteColonnesFOW;
 	private int visibilityDistance;
 	
-	// Variable Petit Point
+	// Variable petit point
 	private boolean[][] littlePoint;
 	int qteLignesLittlePoint;
 	int qteColonnesLittlePoint;
 
-	// Variables fantomes
+	// variables fantomes
 	private LinkedList<Fantomes> fantomes;
 
-	public Jeu(String title) 
-	{
+	// variables points
+	private int points;
+
+	public Jeu(String title) {
 		super(title);
 	}
 
-	public void init(GameContainer gc) throws SlickException 
-	{
-		// Initialisation des variables du Fog of war
+	public void init(GameContainer gc) throws SlickException {
+		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
-
+		
+		// initialisation des variables pour les petits points
 		qteLignesLittlePoint = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesLittlePoint = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		littlePoint = new boolean[qteLignesLittlePoint][qteColonnesLittlePoint];
-
+		
 		// initialisation du niveau
 		int numNiveau = 2; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
 
@@ -56,6 +61,7 @@ public class Jeu extends BasicGame {
 			map = new TiledMap("./map/map.tmx");
 			fillLittlePoint();
 			vitesse = 25;
+			points = map.getObjectGroupCount();
 			break;
 		case 2:
 			map = new TiledMap("./map/map.tmx");
@@ -83,37 +89,47 @@ public class Jeu extends BasicGame {
 		}
 
 		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
-			
 		// variables fantomes
 		fantomes = new LinkedList<>();
 		
 		for (int i = 0; i < 4; i++)
 		{
-			if (i == 0)fantomes.add(new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
-			
+			if (i == 0)
+			{
+				fantomes.add(new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
+			}
 			else if (i == 1)
-				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
-						vitesse, map));
-			else if (i == 2)
-				fantomes.add(new Fantomes("./image/noob.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse,
-						map));
-			else if (i == 3)
-				fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
-						vitesse, map));
-						
-		}
+			{
+				for (int i1 = 0; i1 < 4; i1++) 
+				{
+					if (i1 == 0) 
+					{
+						fantomes.add(new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 16, 21, Direction.UP, vitesse, map));
+					}
+					else if (i1 == 1) 
+					{
+						fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
+					} 
+					else if (i1 == 2) 
+					{
+						fantomes.add(new Fantomes("./image/noob.jpg", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
+					} 
+					else if (i1 == 3) 
+					{
+						fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
+					}
+				}
+			}
+				
 
-		//rendu petit image
-		//genererPoints(grcs);
+		}
 
 	}
 
 	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
 		pacMan.apparaitre();
-		
-		for (Fantomes fantome : fantomes) 
-		{
+		for (Fantomes fantome : fantomes) {
 			fantome.apparaitre();
 		}
 
@@ -128,15 +144,16 @@ public class Jeu extends BasicGame {
 			genererPoints(grcs);
 		//}
 		
-
 	}
 
 	public void update(GameContainer gc, int i) throws SlickException {
-		
+
+		// logs
+
 		// Controle
 		Input input = gc.getInput();
 		int mur = map.getLayerIndex("murs");
-		
+
 		// Droite
 		if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
 				&& map.getTileId(pacMan.getPositionXInt() + 1, pacMan.getPositionYInt(), mur) == 0) {
@@ -217,9 +234,7 @@ public class Jeu extends BasicGame {
 		else if (pacMan.getDirection() == Direction.NEUTRE) {
 
 		}
-		//tests
-				int sol = map.getLayerIndex("sols");
-				System.out.println(map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), sol));
+
 		// fantomes
 
 		for (Fantomes fantome : fantomes) {
@@ -227,17 +242,12 @@ public class Jeu extends BasicGame {
 		}
 
 	}
-	
-	// ************************** FOG OF WAR ******************************
 
 	// Initialise le Fog Of War
-	private void fillFogOfWar() 
-	{
+	private void fillFogOfWar() {
 		System.out.println("oui, ca passe dans fillFogOfWar()");
-		for (int i = 0; i < qteLignesFOW; i++) 
-		{
-			for (int j = 0; j < qteColonnesFOW; j++)
-			{
+		for (int i = 0; i < qteLignesFOW; i++) {
+			for (int j = 0; j < qteColonnesFOW; j++) {
 				fogOfWar[i][j] = true;
 			}
 		}
@@ -252,8 +262,7 @@ public class Jeu extends BasicGame {
 		grphcs.setColor(Color.darkGray);
 		for (int i = 0; i < qteLignes; i++) {
 			for (int j = 0; j < qteColonnes; j++) {
-				if (fogOfWar[i][j]) 
-				{
+				if (fogOfWar[i][j]) {
 					grphcs.fillRect(posX, posY, tilesSize, tilesSize);
 				}
 				posX += tilesSize;
@@ -264,8 +273,7 @@ public class Jeu extends BasicGame {
 	}
 
 	// Enleve le Fog Of War selon les déplacements du personnage
-	private void removeFogSquare(int row, int column) 
-	{
+	private void removeFogSquare(int row, int column) {
 		int rowIndex = row - 1;
 		int columnIndex = column - 1;
 		fogOfWar[rowIndex][columnIndex] = false;
