@@ -27,6 +27,7 @@ public class Main
 			        */
 			        AppGameContainer app = new AppGameContainer(new Jeu("Extrem PAC-MAN"));
 					app.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
+					app.setTargetFrameRate(60);
 					app.start();
 					
 				}
