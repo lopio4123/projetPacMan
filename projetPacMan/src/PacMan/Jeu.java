@@ -30,18 +30,26 @@ public class Jeu extends BasicGame {
 	// variables points
 	private int points;
 
+	// variables de l'audio
+	private Music musique;
+
 	public Jeu(String title) {
 		super(title);
 	}
 
 	public void init(GameContainer gc) throws SlickException {
+		// musique
+		musique = new Music("./son/Music.wav");
+		musique.play();
+		musique.loop();
+		musique.setVolume(0.2f);
 		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
 
 		// initialisation du niveau
-		int numNiveau = 5;
+		int numNiveau = 1;
 
 		switch (numNiveau) {
 		case 0:
@@ -77,23 +85,23 @@ public class Jeu extends BasicGame {
 
 		}
 
-		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
+		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
 		// variables fantomes
 		fantomes = new LinkedList<>();
 		for (int i = 0; i < 4; i++) {
 			if (i == 0) {
 				fantomes.add(
-						new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 16, 21, Direction.UP, vitesse, map));
+						new Fantomes("./image/shrek.png", tilesSize, tilesSize, 16, 21, Direction.UP, vitesse, map));
 			}
 
 			else if (i == 1) {
 				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
 						vitesse, map));
 			} else if (i == 2) {
-				fantomes.add(new Fantomes("./image/noob.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse,
+				fantomes.add(new Fantomes("./image/noob.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse,
 						map));
 			} else if (i == 3) {
-				fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+				fantomes.add(new Fantomes("./image/bobshrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
 						vitesse, map));
 			}
 
@@ -107,7 +115,11 @@ public class Jeu extends BasicGame {
 		for (Fantomes fantome : fantomes) {
 			fantome.apparaitre();
 		}
-
+		// pour les hitbox
+		for (Fantomes fantome : fantomes) {
+			fantome.render(grcs);
+		}
+		pacMan.render(grcs);
 		// rendu du fog of war
 		obscurcir(grcs);
 
@@ -207,7 +219,12 @@ public class Jeu extends BasicGame {
 		for (Fantomes fantome : fantomes) {
 			fantome.update(i);
 		}
-
+		// intersection
+		for (Fantomes fantome : fantomes) {
+			if (pacMan.hitBox.intersects(fantome.hitBox)) {
+				System.out.println("toucheeeeee");
+			}
+		}
 	}
 
 	// Initialise le Fog Of War
