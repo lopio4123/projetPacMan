@@ -24,6 +24,11 @@ public class Jeu extends BasicGame {
 	int qteColonnesFOW;
 	private int visibilityDistance;
 
+	// Variable petit point
+	private boolean[][] littlePoint;
+	int qteLignesLittlePoint;
+	int qteColonnesLittlePoint;
+
 	// variables fantomes
 	private LinkedList<Fantomes> fantomes;
 
@@ -47,9 +52,16 @@ public class Jeu extends BasicGame {
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
-
+		
+		// initialisation des variables pour les petits points
+		qteLignesLittlePoint = (gc.getHeight() - 2 * tilesSize) / tilesSize;
+		qteColonnesLittlePoint = (gc.getWidth() - 2 * tilesSize) / tilesSize;
+		littlePoint = new boolean[qteLignesLittlePoint][qteColonnesLittlePoint];
+		
 		// initialisation du niveau
-		int numNiveau = 1;
+	
+
+		int numNiveau = 5; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
 
 		switch (numNiveau) {
 		case 0:
@@ -57,6 +69,7 @@ public class Jeu extends BasicGame {
 			break;
 		case 1:
 			map = new TiledMap("./map/map.tmx");
+			fillLittlePoint();
 			vitesse = 25;
 			points = map.getObjectGroupCount();
 			break;
@@ -88,12 +101,15 @@ public class Jeu extends BasicGame {
 		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
 		// variables fantomes
 		fantomes = new LinkedList<>();
-		for (int i = 0; i < 4; i++) {
-			if (i == 0) {
-				fantomes.add(
-						new Fantomes("./image/shrek.png", tilesSize, tilesSize, 16, 21, Direction.UP, vitesse, map));
-			}
+		
 
+		
+		for (int i = 0; i < 4; i++)
+		{
+			if (i == 0)
+			{
+				fantomes.add(new Fantomes("./image/shrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
+			}
 			else if (i == 1) {
 				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
 						vitesse, map));
@@ -104,6 +120,31 @@ public class Jeu extends BasicGame {
 				fantomes.add(new Fantomes("./image/bobshrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
 						vitesse, map));
 			}
+
+			else if (i == 1)
+			{
+				for (int i1 = 0; i1 < 4; i1++) 
+				{
+					if (i1 == 0) 
+					{
+						fantomes.add(new Fantomes("./image/shrek.png", tilesSize, tilesSize, 16, 21, Direction.UP, vitesse, map));
+					}
+					else if (i1 == 1) 
+					{
+						fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
+					} 
+					else if (i1 == 2) 
+					{
+						fantomes.add(new Fantomes("./image/noob.png", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
+					} 
+					else if (i1 == 3) 
+					{
+						fantomes.add(new Fantomes("./image/bobshrek.png", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
+					}
+				}
+
+			}
+				
 
 		}
 
@@ -122,6 +163,14 @@ public class Jeu extends BasicGame {
 		pacMan.render(grcs);
 		// rendu du fog of war
 		obscurcir(grcs);
+
+		int sols = map.getLayerIndex("sols");
+
+		// rendu petit point
+		// if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, sols) == 0)
+		// {
+		genererPoints(grcs);
+		// }
 
 	}
 
@@ -239,7 +288,7 @@ public class Jeu extends BasicGame {
 
 	// Fait apparaitre les cases initialisées en noir
 	private void obscurcir(Graphics grphcs) {
-		int qteLignes = fogOfWar.length;
+		int qteLignes = fogOfWar.length - 1;
 		int qteColonnes = fogOfWar[0].length;
 		int posX = tilesSize;
 		int posY = tilesSize;
@@ -332,6 +381,41 @@ public class Jeu extends BasicGame {
 				break;
 			}
 		}
+	}
+
+	// ************************** PETITS POINTS ******************************
+
+	// Initialise les petits points
+	private void fillLittlePoint() {
+		System.out.println("yes");
+		for (int i = 0; i < qteLignesLittlePoint; i++) {
+			for (int j = 0; j < qteColonnesLittlePoint; j++) {
+				littlePoint[i][j] = true;
+			}
+		}
+	}
+
+	private void genererPoints(Graphics grphcs) {
+		int qteLignes = littlePoint.length - 1;
+		int qteColonnes = littlePoint[0].length;
+		int posX = tilesSize;
+		int posY = tilesSize;
+		// grphcs.draw(petitPoint);
+		// if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, mur) != 0)
+
+		grphcs.setColor(Color.orange);
+
+		for (int i = 0; i < qteLignes; i++) {
+			for (int j = 0; j < qteColonnes; j++) {
+				if (littlePoint[i][j]) {
+					grphcs.fillRect(posX, posY, tilesSize, tilesSize);
+				}
+				posX += tilesSize;
+			}
+			posX = tilesSize;
+			posY += tilesSize;
+		}
+
 	}
 
 }
