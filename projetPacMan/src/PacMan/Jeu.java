@@ -121,29 +121,6 @@ public class Jeu extends BasicGame {
 						vitesse, map));
 			}
 
-			else if (i == 1)
-			{
-				for (int i1 = 0; i1 < 4; i1++) 
-				{
-					if (i1 == 0) 
-					{
-						fantomes.add(new Fantomes("./image/shrek.png", tilesSize, tilesSize, 16, 21, Direction.UP, vitesse, map));
-					}
-					else if (i1 == 1) 
-					{
-						fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
-					} 
-					else if (i1 == 2) 
-					{
-						fantomes.add(new Fantomes("./image/noob.png", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
-					} 
-					else if (i1 == 3) 
-					{
-						fantomes.add(new Fantomes("./image/bobshrek.png", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
-					}
-				}
-
-			}
 				
 
 		}
