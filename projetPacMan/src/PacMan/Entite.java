@@ -1,8 +1,10 @@
 package PacMan;
 
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 
 public class Entite {
 	
@@ -15,6 +17,8 @@ public class Entite {
 	private Direction direction;
 	private double positionXX;
 	private double positionYY;
+	//hitbox
+	Rectangle hitBox;
 
 	public Entite(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction) throws SlickException {
 		this.skin = new Image(image);
@@ -24,6 +28,10 @@ public class Entite {
 		largeur = grandeur;
 		this.grandeurTiles = grandeurTiles;
 		this.direction = direction;
+	}
+	
+	public void render(Graphics grcs) {
+		dessinerRectangle(grcs);
 	}
 	
 	public Direction getDirection() {
@@ -129,6 +137,19 @@ public class Entite {
 	public void setGrandeurTiles(int grandeurTiles) {
 		this.grandeurTiles = grandeurTiles;
 	}
+	
+	//pour la hitbox
+	private void dessinerRectangle(Graphics grcs) {
+
+		hitBox = getRectangle();
+		//grcs.draw(hitBox);
+	}
+	protected Rectangle getRectangle() {
+
+		return new Rectangle((this.getPositionX()) * 32, this.getPositionY() * 32, 28, 28);
+	}
+	
+	
 
 
 

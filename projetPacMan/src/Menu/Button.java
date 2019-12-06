@@ -28,7 +28,7 @@ public class Button {
 	public void init(GameContainer gc) throws SlickException {
 
 		button = new Image(image);
-		curseurImg = new Image("./image/shrek.jpg");
+		curseurImg = new Image("./image/shrek.png");
 	}
 
 	public void update(GameContainer gc, int delta) throws SlickException {

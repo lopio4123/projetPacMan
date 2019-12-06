@@ -15,6 +15,7 @@ public class Jeu extends BasicGame {
 	private Entite pacMan;
 	
 	private Accueil afficheAccueil;
+	private Accueil affichePause;
 
 	private int tilesSize = 32;
 	private int mur;
@@ -25,7 +26,7 @@ public class Jeu extends BasicGame {
 	int qteLignesFOW;
 	int qteColonnesFOW;
 	private int visibilityDistance;
-	
+
 	// Variable petit point
 	private boolean[][] littlePoint;
 	int qteLignesLittlePoint;
@@ -37,8 +38,11 @@ public class Jeu extends BasicGame {
 	// Variables points
 	//private int points;
 
-	public Jeu(String title) 
-	{
+
+	// variables de l'audio
+	private Music musique;
+
+	public Jeu(String title) {
 		super(title);
 	}
 
@@ -46,7 +50,15 @@ public class Jeu extends BasicGame {
 	{
 		
 		afficheAccueil = new Accueil();
+		affichePause = new Accueil();
 		afficheAccueil.init(gc);
+		affichePause.init(gc);
+		
+		// musique
+		musique = new Music("./son/Music.wav");
+		musique.play();
+		musique.loop();
+		musique.setVolume(0.2f);
 		
 		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
@@ -62,12 +74,13 @@ public class Jeu extends BasicGame {
 		int numNiveau = 2; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
 		
 		//map = new TiledMap("./map/map1.tmx");
-
+		// initialisation du niveau
+	
 		switch (numNiveau) 
 		{
 		case 1:
 			map = new TiledMap("./map/map.tmx");
-			fillLittlePoint();
+			//fillLittlePoint();
 			vitesse = 25;
 			//points = map.getObjectGroupCount();
 			break;
@@ -96,39 +109,31 @@ public class Jeu extends BasicGame {
 
 		}
 
-		pacMan = new Entite("./image/furry.jpg", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
+		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
 		
 		// Variables fantomes
 		fantomes = new LinkedList<>();
-		
+		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
+		// variables fantomes
+		fantomes = new LinkedList<>();
+				
 		for (int i = 0; i < 4; i++)
 		{
 			if (i == 0)
 			{
-				fantomes.add(new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
+				fantomes.add(new Fantomes("./image/shrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
 			}
-			else if (i == 1)
-			{
-				for (int i1 = 0; i1 < 4; i1++) 
-				{
-					if (i1 == 0) 
-					{
-						fantomes.add(new Fantomes("./image/shrek.jpg", tilesSize, tilesSize, 16, 21, Direction.UP, vitesse, map));
-					}
-					else if (i1 == 1) 
-					{
-						fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
-					} 
-					else if (i1 == 2) 
-					{
-						fantomes.add(new Fantomes("./image/noob.jpg", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
-					} 
-					else if (i1 == 3) 
-					{
-						fantomes.add(new Fantomes("./image/bobshrek.jpg", tilesSize, tilesSize, 9 + i1, 22, Direction.RIGHT, vitesse, map));
-					}
-				}
+			else if (i == 1) {
+				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
+			} else if (i == 2) {
+				fantomes.add(new Fantomes("./image/noob.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT, vitesse,
+						map));
+			} else if (i == 3) {
+				fantomes.add(new Fantomes("./image/bobshrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
 			}
+
 				
 
 		}
@@ -146,9 +151,16 @@ public class Jeu extends BasicGame {
 		}
 
 		// Fog of war
+		// pour les hitbox
+		for (Fantomes fantome : fantomes) {
+			fantome.render(grcs);
+		}
+		pacMan.render(grcs);
+		// rendu du fog of war
 		obscurcir(grcs);
 		
 		/* Petit point
+
 		int sols = map.getLayerIndex("sols");
 		
 		if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, sols) == 0)
@@ -157,18 +169,23 @@ public class Jeu extends BasicGame {
 		}*/
 		
 		afficheAccueil.render();
-		//affichePause.render();
+		affichePause.render();
 
-			
-		
+		// rendu petit point
+		// if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, sols) == 0)
+		// {
+		//genererPoints(grcs);
+		// }
+
 	}
 
 	public void update(GameContainer gc, int i) throws SlickException 
 	{
 		
 		afficheAccueil.update(gc, i);
+		affichePause.update(gc, i);
 		
-		if(afficheAccueil.isOpenMenu == false)
+		if(afficheAccueil.isOpenMenu == false && affichePause.isOpenPause == false)
 		{
 
 			// Controle
@@ -262,7 +279,12 @@ public class Jeu extends BasicGame {
 				fantome.update(i);
 			}
 		}
-
+		// intersection
+		for (Fantomes fantome : fantomes) {
+			if (pacMan.hitBox.intersects(fantome.hitBox)) {
+				System.out.println("toucheeeeee");
+			}
+		}
 	}
 
 	
@@ -400,37 +422,34 @@ public class Jeu extends BasicGame {
 		}
 	}
 
-	
 	// ************************** PETITS POINTS ******************************
-	
+
 	// Initialise les petits points
-	private void fillLittlePoint()
+
+	private void fillLittlePoint() 
 	{
-		//System.out.println("yes");
-		for (int i = 0; i < qteLignesLittlePoint; i++)
+		System.out.println("yes");
+		for (int i = 0; i < qteLignesLittlePoint; i++) 
 		{
-			for (int j = 0; j < qteColonnesLittlePoint; j++) 
-			{
+			for (int j = 0; j < qteColonnesLittlePoint; j++) {
 				littlePoint[i][j] = true;
 			}
 		}
 	}
-	
-	private void genererPoints(Graphics grphcs)
-	{
-		int qteLignes = littlePoint.length - 1 ;
+
+	private void genererPoints(Graphics grphcs) {
+		int qteLignes = littlePoint.length - 1;
 		int qteColonnes = littlePoint[0].length;
 		int posX = tilesSize;
 		int posY = tilesSize;
-		//grphcs.draw(petitPoint);
-		//if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, mur) != 0)
-			
+		// grphcs.draw(petitPoint);
+		// if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, mur) != 0)
+
 		grphcs.setColor(Color.orange);
 
 		for (int i = 0; i < qteLignes; i++) {
 			for (int j = 0; j < qteColonnes; j++) {
-				if (littlePoint[i][j]) 
-				{
+				if (littlePoint[i][j]) {
 					grphcs.fillRect(posX, posY, tilesSize, tilesSize);
 				}
 				posX += tilesSize;
@@ -438,7 +457,7 @@ public class Jeu extends BasicGame {
 			posX = tilesSize;
 			posY += tilesSize;
 		}
-		
+
 	}
-	
+
 }

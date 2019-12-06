@@ -42,9 +42,9 @@ public class Pause extends Button {
 	public void render() throws SlickException {
 		button.draw(posX, posY, largeur, hauteur);
 
-		if (valeurActive == curseur) {
+		/*if (valeurActive == curseur) {
 			//curseurImg.draw(200, 215, 20, 20);
-		}
+		}*/
 
 	}
 

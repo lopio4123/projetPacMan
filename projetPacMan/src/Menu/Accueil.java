@@ -30,8 +30,8 @@ public class Accueil {
 
 	public void init(GameContainer gc) throws SlickException {
 		mapMenu = new TiledMap("./map/accueil.tmx");
-		buttonPlay = new Button("./image/play2.png", 250, 200, 100, 50);
-		buttonExit = new Button("./image/exit.png", 250, 260, 100, 50);
+		buttonPlay = new Button("./image/jouer.png", 250, 200, 100, 50);
+		buttonExit = new Button("./image/quitter.png", 250, 260, 100, 50);
 		buttonPlay.init(gc);
 		buttonExit.init(gc);
 		buttonPlay.setValeurActive(0);
