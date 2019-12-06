@@ -20,11 +20,8 @@ public class Main
 				
 				try 
 				{
+					//NOUVELLE BRANCHE
 					
-					/*AppGameContainer accueil = new AppGameContainer(new Accueil());
-			        accueil.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
-			        accueil.start();*/
-			        
 			        AppGameContainer app = new AppGameContainer(new Jeu("Extrem PAC-MAN"));
 					app.setDisplayMode(largeurAffichage, hauteurAffichage, siPleineEcran);
 					app.setTargetFrameRate(60);
