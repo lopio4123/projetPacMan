@@ -1,6 +1,6 @@
 package PacMan;
 
-import java.awt.Font;
+//import java.awt.Font;
 import java.util.Random;
 
 import org.newdawn.slick.*;

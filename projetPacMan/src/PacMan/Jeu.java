@@ -6,6 +6,7 @@ import javax.swing.JButton;
 
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.*;
+import PacMan.Fantomes;
 
 public class Jeu extends BasicGame {
 

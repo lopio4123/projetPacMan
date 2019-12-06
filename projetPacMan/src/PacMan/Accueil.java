@@ -1,101 +1,140 @@
 package PacMan;
 
-import java.awt.Font;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-
 import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
 
-public class Accueil extends BasicGame {
+public class Accueil {
 
-	private int playersChoice = 1;
-	//private int choice = 0;
-    private boolean exit = false;
-	private boolean play = false;
-	private boolean propos = false;
-    
-    private TiledMap map;
-    private Image buttonPlay;
-    private Image buttonExit;
-    
-    public Accueil() 
-    {
-        super("Main Menu");
-    }
+	int accueilChoixPlayer = 0;
 
-    @Override
-    public void init(GameContainer gc) throws SlickException 
-    {
-    	map = new TiledMap("./map/accueil.tmx");
-    	buttonPlay = new Image("./image/play.png");
-    	buttonExit = new Image("./image/exit2.png");
-    }
+	// Variable Menu d'accueil
+	public boolean isOpenMenu = true;
+	private boolean accueilPlay = false;
+	private boolean accueilExit = false;
+	private TiledMap mapMenu;
+	private Button buttonPlay;
+	private Button buttonExit;
 
-    @Override
-    public void update(GameContainer gc, int delta) throws SlickException 
-    {
-        Input input = gc.getInput();
-                
-        if (input.isKeyPressed(Input.KEY_DOWN)) // Descendre / exit
-        {
-        	if (playersChoice == 0) 
-            {
-               System.out.println("Down");
-            } 
-            else 
-            {
-                playersChoice++;
-            }
-        }
-        if (input.isKeyPressed(Input.KEY_UP)) // Monter / play
-        {
-        	if (playersChoice == 0) 
-            {
-               System.out.println("Up");
-            } 
-            else 
-            {
-                playersChoice--;
-            }
-        }
-        if (input.isKeyPressed(Input.KEY_ENTER)) 
-        {
-            switch (playersChoice) 
-            {
-                case 0:
-                    this.play = true;
-                    break;
-                case 1:
-                	this.exit = true;
-                	break;
-                case 2:
-                	this.propos = true;
-                	break;
-            }
-        }
-    }
+	// Variable de pause
+	public boolean isOpenPause = false;
+	private boolean pauseReprendre = false;
+	private boolean pauseMenu = false;
+	private TiledMap mapPause;
+	private Button buttonPause;
+	private Button buttonReprendre;
+	private Button buttonMenu;
 
-    @Override
-    public void render(GameContainer gc, Graphics g) throws SlickException 
-    {
-        map.render(0, 0);
-        buttonPlay.draw(190, 250, 200, 100);
-        buttonExit.draw(190, 400, 200, 100);
-        //g.drawString("Hello", 50, 50);
-        
-        if (exit) 
-        {
-            gc.exit();
-        }
-        if (play)
-        {
-        	gc.pause();
-        }
-    }
-    
- 
+	public Accueil() {
 
-    
+	}
+
+	public void init(GameContainer gc) throws SlickException {
+		mapMenu = new TiledMap("./map/accueil.tmx");
+		buttonPlay = new Button("./image/play2.png", 250, 200, 100, 50);
+		buttonExit = new Button("./image/exit.png", 250, 260, 100, 50);
+		buttonPlay.init(gc);
+		buttonExit.init(gc);
+		buttonPlay.setValeurActive(0);
+		buttonExit.setValeurActive(1);
+
+		mapPause = new TiledMap("./map/pause.tmx");
+		buttonReprendre = new Button("./image/reprendre.png", 230, 380, 150, 50);
+		buttonMenu = new Button("./image/menu.png", 225, 430, 150, 50);
+		buttonReprendre.init(gc);
+		buttonMenu.init(gc);
+		buttonReprendre.setValeurActive(2);		//0
+		buttonMenu.setValeurActive(3);			//1
+		
+		buttonPause = new Button("/image/pause.png", 240, 305, 90, 30);
+		buttonPause.init(gc);
+	}
+
+	public void update(GameContainer gc, int delta) throws SlickException {
+		Input input = gc.getInput();
+
+		buttonPlay.update(gc, delta);
+		buttonExit.update(gc, delta);
+		buttonReprendre.update(gc, delta);
+		buttonMenu.update(gc, delta);
+		buttonPause.update(gc, delta);
+
+		if (isOpenMenu == true) // menu est affiché
+		{
+			if (input.isKeyPressed(Input.KEY_DOWN)) {
+				accueilChoixPlayer++;
+			}
+			if (input.isKeyPressed(Input.KEY_UP)) {
+				accueilChoixPlayer--;
+			}
+			if (input.isKeyPressed(Input.KEY_ENTER)) {
+				isOpenMenu = false;
+			}
+			if (input.isKeyPressed(Input.KEY_SPACE)) {
+				isOpenPause = false;
+			}
+		}
+		else // jeux en cours
+		{
+			if (input.isKeyPressed(Input.KEY_SPACE)) {
+				isOpenPause = true;
+			}
+
+			if (isOpenPause == true) {
+				if (input.isKeyPressed(Input.KEY_DOWN)) {
+					accueilChoixPlayer++;
+				}
+				if (input.isKeyPressed(Input.KEY_UP)) {
+					accueilChoixPlayer--;
+				}
+				if (input.isKeyPressed(Input.KEY_ENTER)) {
+
+					isOpenPause = false;
+				}
+			}
+
+		}
+
+	}
+
+	public void render() throws SlickException {
+		if (isOpenMenu == true) {
+			mapMenu.render(0, 0);
+			buttonPlay.render();
+			buttonExit.render();
+		}
+		if (isOpenPause == true && isOpenMenu == false) {
+			mapPause.render(0, 0);
+			buttonReprendre.render();
+			buttonMenu.render();
+			buttonPause.render();
+		}
+
+	}
+
+	/**** SETTERS AND GETTERS ****/
+
+	public boolean isAccueilPlay() {
+		return accueilPlay;
+	}
+
+	public void setAccueilPlay(boolean accueilPlay) {
+		this.accueilPlay = accueilPlay;
+	}
+
+	public boolean isAccueilExit() {
+		return accueilExit;
+	}
+
+	public void setAccueilExit(boolean accueilExit) {
+		this.accueilExit = accueilExit;
+	}
+
+	public int getAccueilChoixPlayer() {
+		return accueilChoixPlayer;
+	}
+
+	public void setAccueilChoixPlayer(int accueilChoixPlayer) {
+		this.accueilChoixPlayer = accueilChoixPlayer;
+	}
+
 }
