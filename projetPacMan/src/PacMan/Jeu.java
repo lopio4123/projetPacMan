@@ -13,7 +13,7 @@ public class Jeu extends BasicGame {
 	// Variables Map
 	private TiledMap map;
 	private Entite pacMan;
-	
+
 	private Accueil afficheAccueil;
 	private Accueil affichePause;
 
@@ -35,10 +35,6 @@ public class Jeu extends BasicGame {
 	// Variables fantomes
 	private LinkedList<Fantomes> fantomes;
 
-	// Variables points
-	//private int points;
-
-
 	// variables de l'audio
 	private Music musique;
 
@@ -46,43 +42,37 @@ public class Jeu extends BasicGame {
 		super(title);
 	}
 
-	public void init(GameContainer gc) throws SlickException 
-	{
-		
+	public void init(GameContainer gc) throws SlickException {
+
 		afficheAccueil = new Accueil();
 		affichePause = new Accueil();
 		afficheAccueil.init(gc);
 		affichePause.init(gc);
-		
-		// musique
+
+		// Musique
 		musique = new Music("./son/Music.wav");
 		musique.play();
 		musique.loop();
 		musique.setVolume(0.2f);
-		
+
 		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
-		
+
 		// initialisation des variables pour les petits points
 		qteLignesLittlePoint = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesLittlePoint = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		littlePoint = new boolean[qteLignesLittlePoint][qteColonnesLittlePoint];
-		
+
 		// Initialisation du niveau
-		int numNiveau = 2; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
-		
-		//map = new TiledMap("./map/map1.tmx");
-		// initialisation du niveau
-	
-		switch (numNiveau) 
-		{
+		int numNiveau = 2; // niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
+
+		switch (numNiveau) {
 		case 1:
 			map = new TiledMap("./map/map.tmx");
-			//fillLittlePoint();
+			// fillLittlePoint();
 			vitesse = 25;
-			//points = map.getObjectGroupCount();
 			break;
 		case 2:
 			map = new TiledMap("./map/map.tmx");
@@ -110,20 +100,13 @@ public class Jeu extends BasicGame {
 		}
 
 		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
-		
-		// Variables fantomes
 		fantomes = new LinkedList<>();
-		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
-		// variables fantomes
-		fantomes = new LinkedList<>();
-				
-		for (int i = 0; i < 4; i++)
-		{
-			if (i == 0)
-			{
-				fantomes.add(new Fantomes("./image/shrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
-			}
-			else if (i == 1) {
+
+		for (int i = 0; i < 4; i++) {
+			if (i == 0) {
+				fantomes.add(new Fantomes("./image/shrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
+			} else if (i == 1) {
 				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
 						vitesse, map));
 			} else if (i == 2) {
@@ -134,59 +117,46 @@ public class Jeu extends BasicGame {
 						vitesse, map));
 			}
 
-				
-
 		}
 
 	}
 
-	public void render(GameContainer gc, Graphics grcs) throws SlickException 
-	{
+	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
-		pacMan.apparaitre();
-		
-		for (Fantomes fantome : fantomes) 
-		{
-			fantome.apparaitre();
-		}
 
-		// Fog of war
-		// pour les hitbox
+		pacMan.apparaitre();
+		pacMan.render(grcs);
+
 		for (Fantomes fantome : fantomes) {
+			fantome.apparaitre();
 			fantome.render(grcs);
 		}
-		pacMan.render(grcs);
-		// rendu du fog of war
-		obscurcir(grcs);
-		
-		/* Petit point
 
-		int sols = map.getLayerIndex("sols");
-		
-		if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, sols) == 0)
-		{
-			genererPoints(grcs);
-		}*/
-		
+		// Rendu du fog of war
+		obscurcir(grcs);
+
 		afficheAccueil.render();
 		affichePause.render();
 
 		// rendu petit point
 		// if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, sols) == 0)
 		// {
-		//genererPoints(grcs);
+		// genererPoints(grcs);
 		// }
 
 	}
 
-	public void update(GameContainer gc, int i) throws SlickException 
-	{
-		
+	public void update(GameContainer gc, int i) throws SlickException {
+
 		afficheAccueil.update(gc, i);
 		affichePause.update(gc, i);
-		
-		if(afficheAccueil.isOpenMenu == false && affichePause.isOpenPause == false)
-		{
+
+		// Fantomes
+		for (Fantomes fantome : fantomes) {
+			fantome.update(i);
+		}
+
+		if (afficheAccueil.isOpenMenu == false && affichePause.isOpenPause == false) {
 
 			// Controle
 			Input input = gc.getInput();
@@ -247,6 +217,7 @@ public class Jeu extends BasicGame {
 				pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 				pacMan.setDirection(Direction.NEUTRE);
 			}
+
 			// Pour enlever le brouillard
 			removeFogSquare(pacMan.getPositionYInt(), pacMan.getPositionXInt());
 
@@ -273,50 +244,44 @@ public class Jeu extends BasicGame {
 
 			}
 
-			// fantomes
+			// intersection
+			for (Fantomes fantome : fantomes)
+			{
+				if (pacMan.hitBox.intersects(fantome.hitBox)) 
+				{
+					System.out.println("HIT");
+				}
+			}
 
-			for (Fantomes fantome : fantomes) {
-				fantome.update(i);
-			}
+		} 
+		else {
+
 		}
-		// intersection
-		for (Fantomes fantome : fantomes) {
-			if (pacMan.hitBox.intersects(fantome.hitBox)) {
-				System.out.println("toucheeeeee");
-			}
-		}
+
 	}
 
-	
 	// ************************** FOG OF WAR ******************************
-	
+
 	// Initialise le Fog Of War
-	private void fillFogOfWar() 
-	{
+	private void fillFogOfWar() {
 		System.out.println("oui, ca passe dans fillFogOfWar()");
-		for (int i = 0; i < qteLignesFOW; i++) 
-		{
-			for (int j = 0; j < qteColonnesFOW; j++) 
-			{
+		for (int i = 0; i < qteLignesFOW; i++) {
+			for (int j = 0; j < qteColonnesFOW; j++) {
 				fogOfWar[i][j] = true;
 			}
 		}
 	}
 
 	// Fait apparaitre les cases initialisées en noir
-	private void obscurcir(Graphics grphcs) 
-	{
+	private void obscurcir(Graphics grphcs) {
 		int qteLignes = fogOfWar.length - 1;
 		int qteColonnes = fogOfWar[0].length;
 		int posX = tilesSize;
 		int posY = tilesSize;
 		grphcs.setColor(Color.darkGray);
-		for (int i = 0; i < qteLignes; i++) 
-		{
-			for (int j = 0; j < qteColonnes; j++) 
-			{
-				if (fogOfWar[i][j]) 
-				{
+		for (int i = 0; i < qteLignes; i++) {
+			for (int j = 0; j < qteColonnes; j++) {
+				if (fogOfWar[i][j]) {
 					grphcs.fillRect(posX, posY, tilesSize, tilesSize);
 				}
 				posX += tilesSize;
@@ -327,34 +292,27 @@ public class Jeu extends BasicGame {
 	}
 
 	// Enleve le Fog Of War selon les déplacements du personnage
-	private void removeFogSquare(int row, int column) 
-	{
+	private void removeFogSquare(int row, int column) {
 		int rowIndex = row - 1;
 		int columnIndex = column - 1;
 		fogOfWar[rowIndex][columnIndex] = false;
 
 		int min;
 		int max;
-		for (int i = 1; i < visibilityDistance; i++) 
-		{
-			switch (pacMan.getDirection())
-			{
+		for (int i = 1; i < visibilityDistance; i++) {
+			switch (pacMan.getDirection()) {
 			case UP:
 				min = column - 1 - visibilityDistance / 2;
 				max = min + visibilityDistance;
-				if (min < 0) 
-				{
+				if (min < 0) {
 					min = 0;
 				}
-				if (max > qteColonnesFOW) 
-				{
+				if (max > qteColonnesFOW) {
 					max = qteColonnesFOW;
 				}
 				rowIndex--;
-				for (int j = min; j < max; j++) 
-				{
-					if (rowIndex >= 0) 
-					{
+				for (int j = min; j < max; j++) {
+					if (rowIndex >= 0) {
 						fogOfWar[rowIndex][j] = false;
 					}
 				}
@@ -362,19 +320,15 @@ public class Jeu extends BasicGame {
 			case DOWN:
 				min = column - 1 - visibilityDistance / 2;
 				max = min + visibilityDistance;
-				if (min < 0) 
-				{
+				if (min < 0) {
 					min = 0;
 				}
-				if (max > qteColonnesFOW) 
-				{
+				if (max > qteColonnesFOW) {
 					max = qteColonnesFOW;
 				}
 				rowIndex++;
-				for (int j = min; j < max; j++) 
-				{
-					if (rowIndex < qteLignesFOW) 
-					{
+				for (int j = min; j < max; j++) {
+					if (rowIndex < qteLignesFOW) {
 						fogOfWar[rowIndex][j] = false;
 					}
 				}
@@ -382,19 +336,15 @@ public class Jeu extends BasicGame {
 			case RIGHT:
 				min = row - 1 - visibilityDistance / 2;
 				max = min + visibilityDistance;
-				if (min < 0) 
-				{
+				if (min < 0) {
 					min = 0;
 				}
-				if (max > qteLignesFOW) 
-				{
+				if (max > qteLignesFOW) {
 					max = qteLignesFOW;
 				}
 				columnIndex++;
-				for (int j = min; j < max; j++) 
-				{
-					if (columnIndex < qteColonnesFOW) 
-					{
+				for (int j = min; j < max; j++) {
+					if (columnIndex < qteColonnesFOW) {
 						fogOfWar[j][columnIndex] = false;
 					}
 				}
@@ -402,17 +352,14 @@ public class Jeu extends BasicGame {
 			case LEFT:
 				min = row - 1 - visibilityDistance / 2;
 				max = min + visibilityDistance;
-				if (min < 0) 
-				{
+				if (min < 0) {
 					min = 0;
 				}
-				if (max > qteLignesFOW) 
-				{
+				if (max > qteLignesFOW) {
 					max = qteLignesFOW;
 				}
 				columnIndex--;
-				for (int j = min; j < max; j++) 
-				{
+				for (int j = min; j < max; j++) {
 					if (columnIndex >= 0) {
 						fogOfWar[j][columnIndex] = false;
 					}
@@ -426,11 +373,9 @@ public class Jeu extends BasicGame {
 
 	// Initialise les petits points
 
-	private void fillLittlePoint() 
-	{
+	private void fillLittlePoint() {
 		System.out.println("yes");
-		for (int i = 0; i < qteLignesLittlePoint; i++) 
-		{
+		for (int i = 0; i < qteLignesLittlePoint; i++) {
 			for (int j = 0; j < qteColonnesLittlePoint; j++) {
 				littlePoint[i][j] = true;
 			}
