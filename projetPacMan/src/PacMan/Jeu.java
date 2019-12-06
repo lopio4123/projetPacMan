@@ -16,6 +16,8 @@ public class Jeu extends BasicGame {
 
 	private Accueil afficheAccueil;
 	private Accueil affichePause;
+	
+	//private Fantomes afficheFantomes;
 
 	private int tilesSize = 32;
 	private int mur;
@@ -48,7 +50,7 @@ public class Jeu extends BasicGame {
 		affichePause = new Accueil();
 		afficheAccueil.init(gc);
 		affichePause.init(gc);
-
+		
 		// Musique
 		musique = new Music("./son/Music.wav");
 		musique.play();
@@ -156,7 +158,7 @@ public class Jeu extends BasicGame {
 			fantome.update(i);
 		}
 
-		if (afficheAccueil.isOpenMenu == false && affichePause.isOpenPause == false) {
+		if (afficheAccueil.isOpenMenu == false /*&& affichePause.isOpenPause == false*/) {
 
 			// Controle
 			Input input = gc.getInput();
@@ -254,9 +256,14 @@ public class Jeu extends BasicGame {
 			}
 
 		} 
-		else {
-
-		}
+		/*else {
+			
+			if (affichePause.isOpenPause == true)
+			{
+				System.out.println("stop");
+			}
+			
+		}*/
 
 	}
 

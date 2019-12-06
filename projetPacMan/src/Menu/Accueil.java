@@ -54,44 +54,42 @@ public class Accueil {
 
 		buttonPlay.update(gc, delta);
 		buttonExit.update(gc, delta);
-		buttonReprendre.update(gc, delta);
+		//buttonReprendre.update(gc, delta);
 		buttonMenu.update(gc, delta);
 		buttonPause.update(gc, delta);
 
 		if (isOpenMenu == true) // menu est affiché
 		{
+			isOpenPause = false;
+			/*if (input.isKeyPressed(Input.KEY_DOWN)) {
+				accueilChoixPlayer++;
+				isOpenMenu = false;
+			}
+			if (input.isKeyPressed(Input.KEY_UP)) {
+				accueilChoixPlayer--;
+				isOpenMenu = false;
+			}*/
+			
+			if (input.isKeyPressed(Input.KEY_ENTER)) isOpenMenu = false;
+			//if (input.isKeyPressed(Input.KEY_SPACE)) 
+		}
+		if (isOpenPause == true) 
+		{
+			isOpenMenu = false;
 			if (input.isKeyPressed(Input.KEY_DOWN)) {
 				accueilChoixPlayer++;
 			}
 			if (input.isKeyPressed(Input.KEY_UP)) {
 				accueilChoixPlayer--;
 			}
-			if (input.isKeyPressed(Input.KEY_ENTER)) {
-				isOpenMenu = false;
-			}
-			if (input.isKeyPressed(Input.KEY_SPACE)) {
-				isOpenPause = false;
-			}
+
 		}
 		else // jeux en cours
 		{
 			if (input.isKeyPressed(Input.KEY_SPACE)) {
 				isOpenPause = true;
+				gc.isPaused();
 			}
-
-			if (isOpenPause == true) {
-				if (input.isKeyPressed(Input.KEY_DOWN)) {
-					accueilChoixPlayer++;
-				}
-				if (input.isKeyPressed(Input.KEY_UP)) {
-					accueilChoixPlayer--;
-				}
-				if (input.isKeyPressed(Input.KEY_ENTER)) {
-
-					isOpenPause = false;
-				}
-			}
-
 		}
 
 	}
@@ -102,7 +100,7 @@ public class Accueil {
 			buttonPlay.render();
 			buttonExit.render();
 		}
-		if (isOpenPause == true && isOpenMenu == false) {
+		if (isOpenPause == true ) {
 			mapPause.render(0, 0);
 			buttonReprendre.render();
 			buttonMenu.render();

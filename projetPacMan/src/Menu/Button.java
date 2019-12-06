@@ -36,6 +36,7 @@ public class Button {
 
 		if (input.isKeyPressed(Input.KEY_DOWN)) {
 			curseur++;
+			curseurImg.draw(posX+50, posY);
 		}
 		if (input.isKeyPressed(Input.KEY_UP)) {
 			curseur--;
