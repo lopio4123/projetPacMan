@@ -37,6 +37,9 @@ public class Jeu extends BasicGame {
 
 	// variables de l'audio
 	private Music musique;
+	//variable de vies
+	private int nbVie;
+	private Image heart;
 
 	public Jeu(String title) {
 		super(title);
@@ -60,8 +63,8 @@ public class Jeu extends BasicGame {
 		
 		// initialisation du niveau
 	
-
-		int numNiveau = 5; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
+		nbVie = 3;
+		int numNiveau = 1; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
 
 		switch (numNiveau) {
 		case 0:
@@ -69,7 +72,7 @@ public class Jeu extends BasicGame {
 			break;
 		case 1:
 			map = new TiledMap("./map/map.tmx");
-			fillLittlePoint();
+			//fillLittlePoint();
 			vitesse = 25;
 			points = map.getObjectGroupCount();
 			break;
@@ -98,6 +101,8 @@ public class Jeu extends BasicGame {
 
 		}
 
+		//variable personnage principal
+		heart = new Image("./image/heart.png");
 		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
 		// variables fantomes
 		fantomes = new LinkedList<>();
@@ -129,6 +134,11 @@ public class Jeu extends BasicGame {
 
 	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
+		//variable personnage principale
+		for(int i = 0; i<nbVie;i++) {
+			heart.draw((3+i) * tilesSize, 24 * tilesSize, 32, 32);
+		}
+		
 		pacMan.apparaitre();
 		for (Fantomes fantome : fantomes) {
 			fantome.apparaitre();
@@ -249,6 +259,12 @@ public class Jeu extends BasicGame {
 		for (Fantomes fantome : fantomes) {
 			if (pacMan.hitBox.intersects(fantome.hitBox)) {
 				System.out.println("toucheeeeee");
+				nbVie--;
+				pacMan.setPositionX(2);
+				//pour etre sure que le vies ne sois jamais en dessous de 0
+				if (nbVie < 0) {
+					nbVie = 0;
+				}
 			}
 		}
 	}
