@@ -8,7 +8,8 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.tiled.TiledMap;
 
 public class Fantomes extends Entite {
-	// declaration variable
+	
+	// Declaration variable
 	private int vitesse;
 	private TiledMap map;
 	private int randomNum;
@@ -16,24 +17,15 @@ public class Fantomes extends Entite {
 	private Rectangle hitBoxEnnemi;
 	private boolean dejaTourne = false;
 
-	/*
-	 * int w = original_image.getWidth() nbCols; int h = original_image.getHeight()
-	 * nbRows; int x = thisCol*w; int y = thisRow*h; subImage = new getSubImage(x,y,
-	 * w, h); private int playersChoice = 1; //private int choice = 0; private
-	 * boolean exit = false; private boolean play = false; private boolean propos =
-	 * false; private TiledMap map; private Image buttonPlay; private Image
-	 * buttonExit;
-	 */
-
 	// Constructeur
-	public Fantomes(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction,
-			int vitesse, TiledMap map) throws SlickException {
+	public Fantomes(String image, int grandeur, int grandeurTiles, int positionX, int positionY, Direction direction, int vitesse, TiledMap map) throws SlickException {
 		super(image, grandeur, grandeurTiles, positionX, positionY, direction);
 		this.vitesse = vitesse;
 		this.map = map;
 	}
 
-	public void update(int i) {
+	public void update(int i) 
+	{
 		if (this.getDirection() == Direction.NEUTRE) {
 			this.setDirection(this.decidationDirection());
 		}
@@ -48,15 +40,13 @@ public class Fantomes extends Entite {
 			this.deplacementY((0.1 * i) / vitesse);
 		}
 		compteur++;
-		if(dejaTourne == false)
-		{
+		if (dejaTourne == false) {
 			this.siTourne(this.getDirection(), map);
 			dejaTourne = true;
 		}
-		if(compteur >= 5) {
+		if (compteur >= 5) {
 			dejaTourne = false;
 		}
-		
 
 		// arret vers un mur
 		int mur = map.getLayerIndex("murs");
@@ -89,35 +79,27 @@ public class Fantomes extends Entite {
 			this.setDirection(Direction.NEUTRE);
 		}
 	}
-/*
-	private int scanDirection() {
-		/*
-		 * Direction droit + 1 direction gauche + 2 direction haut + 4 direction bas + 8
-		 */
+
 	/*
-		int codeDirection = 0;
-		int mur = map.getLayerIndex("murs");
-		// droit
-		if (map.getTileId(this.getPositionXIntArret() + 1, this.getPositionYIntArret(), mur) == 0) {
-			codeDirection++;
-		}
-		// gauche
-		if (map.getTileId(this.getPositionXIntArret() - 1, this.getPositionYIntArret(), mur) == 0) {
-			codeDirection += 2;
-		}
-		// haut
-		if (map.getTileId(this.getPositionXIntArret(), this.getPositionYIntArret() - 1, mur) == 0) {
-			codeDirection += 4;
-		}
-		// bas
-		if (map.getTileId(this.getPositionXIntArret(), this.getPositionYIntArret() + 1, mur) == 0) {
-			codeDirection += 8;
-		}
-
-		return codeDirection;
-
-	}
-*/
+	 * private int scanDirection() { /* Direction droit + 1 direction gauche + 2
+	 * direction haut + 4 direction bas + 8
+	 */
+	/*
+	 * int codeDirection = 0; int mur = map.getLayerIndex("murs"); // droit if
+	 * (map.getTileId(this.getPositionXIntArret() + 1, this.getPositionYIntArret(),
+	 * mur) == 0) { codeDirection++; } // gauche if
+	 * (map.getTileId(this.getPositionXIntArret() - 1, this.getPositionYIntArret(),
+	 * mur) == 0) { codeDirection += 2; } // haut if
+	 * (map.getTileId(this.getPositionXIntArret(), this.getPositionYIntArret() - 1,
+	 * mur) == 0) { codeDirection += 4; } // bas if
+	 * (map.getTileId(this.getPositionXIntArret(), this.getPositionYIntArret() + 1,
+	 * mur) == 0) { codeDirection += 8; }
+	 * 
+	 * return codeDirection;
+	 * 
+	 * }
+	 */
+	
 	private Direction decidationDirection() {
 		Random rand = new Random();
 		int random = rand.nextInt(4);
@@ -139,59 +121,31 @@ public class Fantomes extends Entite {
 		return direction;
 
 	}
-/*
-	// decide de sa direction quand il est neutre.
-	private Direction decideDirection() {
-		Direction direction = null;
-		int codeDirection = scanDirection();
-		boolean isRight = false;
-		boolean isLeft = false;
-		boolean isUp = false;
-		boolean isDown = false;
-		// bas
-		if (codeDirection > 8) {
-			isDown = true;
-			codeDirection -= 8;
 
-		}
-		// haut
-		if (codeDirection > 4) {
-			isUp = true;
-			codeDirection -= 4;
-
-		}
-		// gauche
-		if (codeDirection > 2) {
-			isLeft = true;
-			codeDirection -= 2;
-
-		}
-		// droite
-		if (codeDirection == 1) {
-			isRight = true;
-			codeDirection -= 1;
-
-		}
-
-		do {
-			Random rand = new Random();
-			int random = rand.nextInt(4);
-			System.out.println(random);
-			System.out.println(isLeft);
-			if (random == 0 && isRight == true) {
-				direction = Direction.RIGHT;
-			} else if (random == 1 && isLeft == true) {
-				direction = Direction.LEFT;
-			} else if (random == 2 && isUp == true) {
-				direction = Direction.UP;
-			} else if (random == 3 && isDown == true) {
-				direction = Direction.DOWN;
-			}
-		} while (direction == null);
-
-		return direction;
-	}
-*/
+	/*
+	 * // decide de sa direction quand il est neutre. private Direction
+	 * decideDirection() { Direction direction = null; int codeDirection =
+	 * scanDirection(); boolean isRight = false; boolean isLeft = false; boolean
+	 * isUp = false; boolean isDown = false; // bas if (codeDirection > 8) { isDown
+	 * = true; codeDirection -= 8;
+	 * 
+	 * } // haut if (codeDirection > 4) { isUp = true; codeDirection -= 4;
+	 * 
+	 * } // gauche if (codeDirection > 2) { isLeft = true; codeDirection -= 2;
+	 * 
+	 * } // droite if (codeDirection == 1) { isRight = true; codeDirection -= 1;
+	 * 
+	 * }
+	 * 
+	 * do { Random rand = new Random(); int random = rand.nextInt(4);
+	 * System.out.println(random); System.out.println(isLeft); if (random == 0 &&
+	 * isRight == true) { direction = Direction.RIGHT; } else if (random == 1 &&
+	 * isLeft == true) { direction = Direction.LEFT; } else if (random == 2 && isUp
+	 * == true) { direction = Direction.UP; } else if (random == 3 && isDown ==
+	 * true) { direction = Direction.DOWN; } } while (direction == null);
+	 * 
+	 * return direction; }
+	 */
 	private void siTourne(Direction direction, TiledMap map) {
 		Random rand = new Random();
 		int virage = rand.nextInt(30);
@@ -216,7 +170,7 @@ public class Fantomes extends Entite {
 		}
 
 		else if ((this.getDirection() == Direction.RIGHT || this.getDirection() == Direction.LEFT)
-				&& map.getTileId(this.getPositionXIntArret(), this.getPositionYIntArret() - 1, sol) != 0) { 
+				&& map.getTileId(this.getPositionXIntArret(), this.getPositionYIntArret() - 1, sol) != 0) {
 			if (virage == 3) {
 				this.setPositionX(Math.round(this.getPositionX()));
 				this.setDirection(Direction.UP);
@@ -233,6 +187,5 @@ public class Fantomes extends Entite {
 		}
 
 	}
-	
-		
+
 }

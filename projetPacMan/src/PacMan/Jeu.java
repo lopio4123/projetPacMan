@@ -2,17 +2,22 @@ package PacMan;
 
 import java.util.LinkedList;
 
-import javax.swing.JButton;
-
 import org.newdawn.slick.tiled.TiledMap;
+
+import Menu.Accueil;
+
 import org.newdawn.slick.*;
 
 public class Jeu extends BasicGame {
 
 	// Variables Map
 	private TiledMap map;
-	private TiledMap accueil;
 	private Entite pacMan;
+
+	private Accueil afficheAccueil;
+	private Accueil affichePause;
+
+	// private Fantomes afficheFantomes;
 
 	private int tilesSize = 32;
 	private int mur;
@@ -29,15 +34,12 @@ public class Jeu extends BasicGame {
 	int qteLignesLittlePoint;
 	int qteColonnesLittlePoint;
 
-	// variables fantomes
+	// Variables fantomes
 	private LinkedList<Fantomes> fantomes;
-
-	// variables points
-	private int points;
 
 	// variables de l'audio
 	private Music musique;
-	//variable de vies
+	// variable de vies
 	private int nbVie;
 	private Image heart;
 
@@ -46,35 +48,38 @@ public class Jeu extends BasicGame {
 	}
 
 	public void init(GameContainer gc) throws SlickException {
-		// musique
+
+		afficheAccueil = new Accueil();
+		affichePause = new Accueil();
+		afficheAccueil.init(gc);
+		affichePause.init(gc);
+
+		// Musique
 		musique = new Music("./son/Music.wav");
 		musique.play();
 		musique.loop();
 		musique.setVolume(0.2f);
+
 		// initialisation des variables du fog of war
 		qteLignesFOW = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesFOW = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		fogOfWar = new boolean[qteLignesFOW][qteColonnesFOW];
-		
+
 		// initialisation des variables pour les petits points
 		qteLignesLittlePoint = (gc.getHeight() - 2 * tilesSize) / tilesSize;
 		qteColonnesLittlePoint = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		littlePoint = new boolean[qteLignesLittlePoint][qteColonnesLittlePoint];
-		
+
 		// initialisation du niveau
-	
+
 		nbVie = 3;
-		int numNiveau = 1; //niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
+		int numNiveau = 1; // niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
 
 		switch (numNiveau) {
-		case 0:
-			// map = new TiledMap("./map/accueil.tmx");
-			break;
 		case 1:
 			map = new TiledMap("./map/map.tmx");
-			//fillLittlePoint();
+
 			vitesse = 25;
-			points = map.getObjectGroupCount();
 			break;
 		case 2:
 			map = new TiledMap("./map/map.tmx");
@@ -101,21 +106,16 @@ public class Jeu extends BasicGame {
 
 		}
 
-		//variable personnage principal
+		// variable personnage principal
 		heart = new Image("./image/heart.png");
 		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
-		// variables fantomes
 		fantomes = new LinkedList<>();
-		
 
-		
-		for (int i = 0; i < 4; i++)
-		{
-			if (i == 0)
-			{
-				fantomes.add(new Fantomes("./image/shrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,vitesse, map));
-			}
-			else if (i == 1) {
+		for (int i = 0; i < 4; i++) {
+			if (i == 0) {
+				fantomes.add(new Fantomes("./image/shrek.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
+						vitesse, map));
+			} else if (i == 1) {
 				fantomes.add(new Fantomes("./image/sanic.png", tilesSize, tilesSize, 9 + i, 22, Direction.RIGHT,
 						vitesse, map));
 			} else if (i == 2) {
@@ -126,132 +126,45 @@ public class Jeu extends BasicGame {
 						vitesse, map));
 			}
 
-				
-
 		}
 
 	}
 
 	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
-		//variable personnage principale
-		for(int i = 0; i<nbVie;i++) {
-			heart.draw((3+i) * tilesSize, 24 * tilesSize, 32, 32);
+		// variable personnage principale
+		for (int i = 0; i < nbVie; i++) {
+			heart.draw((3 + i) * tilesSize, 24 * tilesSize, 32, 32);
 		}
-		
+
 		pacMan.apparaitre();
+		pacMan.render(grcs);
+
 		for (Fantomes fantome : fantomes) {
 			fantome.apparaitre();
-		}
-		// pour les hitbox
-		for (Fantomes fantome : fantomes) {
 			fantome.render(grcs);
 		}
-		pacMan.render(grcs);
-		// rendu du fog of war
+
+		// Rendu du fog of war
 		obscurcir(grcs);
 
-		int sols = map.getLayerIndex("sols");
+		afficheAccueil.render();
+		affichePause.render();
 
 		// rendu petit point
 		// if (map.getTileId(qteLignesLittlePoint, qteColonnesLittlePoint, sols) == 0)
 		// {
-		genererPoints(grcs);
+		// genererPoints(grcs);
 		// }
 
 	}
 
 	public void update(GameContainer gc, int i) throws SlickException {
 
-		// logs
+		afficheAccueil.update(gc, i);
+		affichePause.update(gc, i);
 
-		// Controle
-		Input input = gc.getInput();
-		int mur = map.getLayerIndex("murs");
-
-		// Droite
-		if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
-				&& map.getTileId(pacMan.getPositionXInt() + 1, pacMan.getPositionYInt(), mur) == 0) {
-			pacMan.setDirection(Direction.RIGHT);
-			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
-		}
-		// Gauche
-		if ((input.isKeyPressed(Input.KEY_A) || input.isKeyPressed(Input.KEY_LEFT))
-				&& map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0) {
-			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
-			pacMan.setDirection(Direction.LEFT);
-		}
-		// Haut
-		if ((input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP))
-				&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() - 1, mur) == 0) {
-			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
-			pacMan.setDirection(Direction.UP);
-		}
-		// Bas
-		if ((input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN))
-				&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() + 1, mur) == 0) {
-			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
-			pacMan.setDirection(Direction.DOWN);
-		}
-
-		// S'arrete s'il y a un mur
-
-		// Verifie le coté droit
-		if (pacMan.getDirection() == Direction.RIGHT
-				&& map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) {
-			// pour que pac man s'arrete a un chiffre rond
-			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
-			pacMan.setDirection(Direction.NEUTRE);
-		}
-		// Verifie le coté gauche
-		else if (pacMan.getDirection() == Direction.LEFT
-				&& map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), mur) != 0) {
-			// pour que pac man s'arrete a un chiffre rond
-			pacMan.setPositionX(Math.round(pacMan.getPositionX()));
-			pacMan.setDirection(Direction.NEUTRE);
-		}
-		// Verifie le coté haut
-		else if (pacMan.getDirection() == Direction.UP
-				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() - 1, mur) != 0) {
-			// pour que pac man s'arrete a un chiffre rond
-			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
-			pacMan.setDirection(Direction.NEUTRE);
-		}
-		// Verifie le coté bas
-		else if (pacMan.getDirection() == Direction.DOWN
-				&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() + 1, mur) != 0) {
-			// pour que pac man s'arrete a un chiffre rond
-			pacMan.setPositionY(Math.round(pacMan.getPositionY()));
-			pacMan.setDirection(Direction.NEUTRE);
-		}
-		// Pour enlever le brouillard
-		removeFogSquare(pacMan.getPositionYInt(), pacMan.getPositionXInt());
-
-		// ***************** Déplacement *****************
-
-		// droite
-		if (pacMan.getDirection() == Direction.RIGHT) {
-			pacMan.deplacementX((0.1 * i) / vitesse);
-		}
-		// gauche
-		else if (pacMan.getDirection() == Direction.LEFT) {
-			pacMan.deplacementX((-0.1 * i) / vitesse);
-		}
-		// haut
-		else if (pacMan.getDirection() == Direction.UP) {
-			pacMan.deplacementY((-0.1 * i) / vitesse);
-		}
-		// bas
-		else if (pacMan.getDirection() == Direction.DOWN) {
-			pacMan.deplacementY((0.1 * i) / vitesse);
-		}
-		// immobile
-		else if (pacMan.getDirection() == Direction.NEUTRE) {
-
-		}
-
-		// fantomes
-
+		// Fantomes
 		for (Fantomes fantome : fantomes) {
 			fantome.update(i);
 		}
@@ -265,9 +178,110 @@ public class Jeu extends BasicGame {
 				if (nbVie < 0) {
 					nbVie = 0;
 				}
+
+		if (afficheAccueil.isOpenMenu == false /*&& affichePause.isOpenPause == false*/) {
+
+			// Controle
+			Input input = gc.getInput();
+			int mur = map.getLayerIndex("murs");
+
+			// Droite
+			if ((input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT))
+					&& map.getTileId(pacMan.getPositionXInt() + 1, pacMan.getPositionYInt(), mur) == 0) {
+				pacMan.setDirection(Direction.RIGHT);
+				pacMan.setPositionY(Math.round(pacMan.getPositionY()));
 			}
-		}
+			// Gauche
+			if ((input.isKeyPressed(Input.KEY_A) || input.isKeyPressed(Input.KEY_LEFT))
+					&& map.getTileId(pacMan.getPositionXInt() - 1, pacMan.getPositionYInt(), mur) == 0) {
+				pacMan.setPositionY(Math.round(pacMan.getPositionY()));
+				pacMan.setDirection(Direction.LEFT);
+			}
+			// Haut
+			if ((input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP))
+					&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() - 1, mur) == 0) {
+				pacMan.setPositionX(Math.round(pacMan.getPositionX()));
+				pacMan.setDirection(Direction.UP);
+			}
+			// Bas
+			if ((input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN))
+					&& map.getTileId(pacMan.getPositionXInt(), pacMan.getPositionYInt() + 1, mur) == 0) {
+				pacMan.setPositionX(Math.round(pacMan.getPositionX()));
+				pacMan.setDirection(Direction.DOWN);
+			}
+
+			// S'arrete s'il y a un mur
+
+			// Verifie le coté droit
+			if (pacMan.getDirection() == Direction.RIGHT
+					&& map.getTileId(pacMan.getPositionXIntArret() + 1, pacMan.getPositionYIntArret(), mur) != 0) {
+				// pour que pac man s'arrete a un chiffre rond
+				pacMan.setPositionX(Math.round(pacMan.getPositionX()));
+				pacMan.setDirection(Direction.NEUTRE);
+			}
+			// Verifie le coté gauche
+			else if (pacMan.getDirection() == Direction.LEFT
+					&& map.getTileId(pacMan.getPositionXIntArret() - 1, pacMan.getPositionYIntArret(), mur) != 0) {
+				// pour que pac man s'arrete a un chiffre rond
+				pacMan.setPositionX(Math.round(pacMan.getPositionX()));
+				pacMan.setDirection(Direction.NEUTRE);
+			}
+			// Verifie le coté haut
+			else if (pacMan.getDirection() == Direction.UP
+					&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() - 1, mur) != 0) {
+				// pour que pac man s'arrete a un chiffre rond
+				pacMan.setPositionY(Math.round(pacMan.getPositionY()));
+				pacMan.setDirection(Direction.NEUTRE);
+			}
+			// Verifie le coté bas
+			else if (pacMan.getDirection() == Direction.DOWN
+					&& map.getTileId(pacMan.getPositionXIntArret(), pacMan.getPositionYIntArret() + 1, mur) != 0) {
+				// pour que pac man s'arrete a un chiffre rond
+				pacMan.setPositionY(Math.round(pacMan.getPositionY()));
+				pacMan.setDirection(Direction.NEUTRE);
+			}
+
+			// Pour enlever le brouillard
+			removeFogSquare(pacMan.getPositionYInt(), pacMan.getPositionXInt());
+
+			// ***************** Déplacement *****************
+
+			// droite
+			if (pacMan.getDirection() == Direction.RIGHT) {
+				pacMan.deplacementX((0.1 * i) / vitesse);
+			}
+			// gauche
+			else if (pacMan.getDirection() == Direction.LEFT) {
+				pacMan.deplacementX((-0.1 * i) / vitesse);
+			}
+			// haut
+			else if (pacMan.getDirection() == Direction.UP) {
+				pacMan.deplacementY((-0.1 * i) / vitesse);
+			}
+			// bas
+			else if (pacMan.getDirection() == Direction.DOWN) {
+				pacMan.deplacementY((0.1 * i) / vitesse);
+			}
+			// immobile
+			else if (pacMan.getDirection() == Direction.NEUTRE) {
+
+			}
+
+		} 
+		/*else {
+			
+			if (affichePause.isOpenPause == true)
+			{
+				System.out.println("stop");
+			}
+			
+		}*/
+
 	}
+		    }
+	}
+
+	// ************************** FOG OF WAR ******************************
 
 	// Initialise le Fog Of War
 	private void fillFogOfWar() {
@@ -379,6 +393,7 @@ public class Jeu extends BasicGame {
 	// ************************** PETITS POINTS ******************************
 
 	// Initialise les petits points
+
 	private void fillLittlePoint() {
 		System.out.println("yes");
 		for (int i = 0; i < qteLignesLittlePoint; i++) {
@@ -410,5 +425,4 @@ public class Jeu extends BasicGame {
 		}
 
 	}
-
 }
