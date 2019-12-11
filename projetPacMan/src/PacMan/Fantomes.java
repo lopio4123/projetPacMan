@@ -44,7 +44,7 @@ public class Fantomes extends Entite {
 			this.siTourne(this.getDirection(), map);
 			dejaTourne = true;
 		}
-		if (compteur >= 110) {
+		if (compteur >= 5) {
 			dejaTourne = false;
 		}
 

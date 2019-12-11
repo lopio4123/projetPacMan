@@ -16,8 +16,8 @@ public class Jeu extends BasicGame {
 
 	private Accueil afficheAccueil;
 	private Accueil affichePause;
-	
-	//private Fantomes afficheFantomes;
+
+	// private Fantomes afficheFantomes;
 
 	private int tilesSize = 32;
 	private int mur;
@@ -39,6 +39,9 @@ public class Jeu extends BasicGame {
 
 	// variables de l'audio
 	private Music musique;
+	// variable de vies
+	private int nbVie;
+	private Image heart;
 
 	public Jeu(String title) {
 		super(title);
@@ -50,7 +53,7 @@ public class Jeu extends BasicGame {
 		affichePause = new Accueil();
 		afficheAccueil.init(gc);
 		affichePause.init(gc);
-		
+
 		// Musique
 		musique = new Music("./son/Music.wav");
 		musique.play();
@@ -67,13 +70,15 @@ public class Jeu extends BasicGame {
 		qteColonnesLittlePoint = (gc.getWidth() - 2 * tilesSize) / tilesSize;
 		littlePoint = new boolean[qteLignesLittlePoint][qteColonnesLittlePoint];
 
-		// Initialisation du niveau
-		int numNiveau = 2; // niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
+		// initialisation du niveau
+
+		nbVie = 3;
+		int numNiveau = 1; // niveau 1, il y a du bleu ne t'inquite pas c'est pour moi
 
 		switch (numNiveau) {
 		case 1:
 			map = new TiledMap("./map/map.tmx");
-			// fillLittlePoint();
+
 			vitesse = 25;
 			break;
 		case 2:
@@ -101,6 +106,8 @@ public class Jeu extends BasicGame {
 
 		}
 
+		// variable personnage principal
+		heart = new Image("./image/heart.png");
 		pacMan = new Entite("./image/furry.png", tilesSize, tilesSize, 8, 22, Direction.NEUTRE);
 		fantomes = new LinkedList<>();
 
@@ -125,6 +132,10 @@ public class Jeu extends BasicGame {
 
 	public void render(GameContainer gc, Graphics grcs) throws SlickException {
 		map.render(0, 0);
+		// variable personnage principale
+		for (int i = 0; i < nbVie; i++) {
+			heart.draw((3 + i) * tilesSize, 24 * tilesSize, 32, 32);
+		}
 
 		pacMan.apparaitre();
 		pacMan.render(grcs);
@@ -157,6 +168,16 @@ public class Jeu extends BasicGame {
 		for (Fantomes fantome : fantomes) {
 			fantome.update(i);
 		}
+		// intersection
+		for (Fantomes fantome : fantomes) {
+			if (pacMan.hitBox.intersects(fantome.hitBox)) {
+				System.out.println("toucheeeeee");
+				nbVie--;
+				pacMan.setPositionX(2);
+				//pour etre sure que le vies ne sois jamais en dessous de 0
+				if (nbVie < 0) {
+					nbVie = 0;
+				}
 
 		if (afficheAccueil.isOpenMenu == false /*&& affichePause.isOpenPause == false*/) {
 
@@ -246,15 +267,6 @@ public class Jeu extends BasicGame {
 
 			}
 
-			// intersection
-			for (Fantomes fantome : fantomes)
-			{
-				if (pacMan.hitBox.intersects(fantome.hitBox)) 
-				{
-					System.out.println("HIT");
-				}
-			}
-
 		} 
 		/*else {
 			
@@ -265,6 +277,8 @@ public class Jeu extends BasicGame {
 			
 		}*/
 
+	}
+		    }
 	}
 
 	// ************************** FOG OF WAR ******************************
@@ -411,5 +425,4 @@ public class Jeu extends BasicGame {
 		}
 
 	}
-
 }
