@@ -9,6 +9,8 @@ import Menu.Accueil;
 import org.newdawn.slick.*;
 
 public class Jeu extends BasicGame {
+	
+
 
 	// Variables Map
 	private TiledMap map;
