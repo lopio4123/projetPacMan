@@ -28,28 +28,28 @@ public class Button {
 	public void init(GameContainer gc) throws SlickException {
 
 		button = new Image(image);
-		curseurImg = new Image("./image/shrek.png");
+		//curseurImg = new Image("./image/shrek.png");
 	}
 
 	public void update(GameContainer gc, int delta) throws SlickException {
 		Input input = gc.getInput();
 
-		if (input.isKeyPressed(Input.KEY_DOWN)) {
+		/*if (input.isKeyPressed(Input.KEY_DOWN)) {
 			curseur++;
 			curseurImg.draw(posX+50, posY);
 		}
 		if (input.isKeyPressed(Input.KEY_UP)) {
 			curseur--;
-		}
+		}*/
 
 	}
 
 	public void render() throws SlickException {
 		button.draw(posX, posY, largeur, hauteur);
 
-		if (valeurActive == curseur) {
+		/*if (valeurActive == curseur) {
 			curseurImg.draw(200, 215, 20, 20);
-		}
+		}*/
 
 	}
 

@@ -1,8 +1,6 @@
 package PacMan;
 
-
 public class Point {
-	
 	private int posX;
 	private int posY;
 	
@@ -28,8 +26,4 @@ public class Point {
 	}
 	
 	
-	
-	
-
-
 }
